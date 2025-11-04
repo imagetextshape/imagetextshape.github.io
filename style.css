@@ -1,0 +1,201 @@
+@font-face {
+  font-family: 'Menlo';
+  src: url('font/Menlo-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Joystix';
+  src: url('font/Joystix.otf') format('opentype');
+}
+@font-face {
+  font-family: 'VintageB';
+  src: url('font/VintageB.otf') format('opentype');
+}
+@font-face {
+  font-family: 'Spraypaint';
+  src: url('font/Spraypaint.otf') format('opentype');
+}
+@font-face {
+  font-family: 'Silkscreen Regular';
+  src: url('font/Silkscreen-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Silkscreen Bold';
+  src: url('font/Silkscreen-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Headline';
+  src: url('font/Headline.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Roboto';
+  src: url('font/Roboto-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Typewriter';
+  src: url('font/atwriter.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Nineteen Forty Two';
+  src: url('font/1942.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Draconian';
+  src: url('font/draconian.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Metalic';
+  src: url('font/metalic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Old';
+  src: url('font/old.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Wbx';
+  src: url('font/wbx.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Special Elite';
+  src: url('font/SpecialElite-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Marker';
+  src: url('font/PermanentMarker-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Punk';
+  src: url('font/punk.otf') format('opentype');
+}
+@font-face {
+  font-family: 'ITC';
+  src: url('font/ITCAvantGardePro-Bold.otf') format('opentype');
+}
+@font-face {
+  font-family: 'Resolution';
+  src: url('font/ResolutionSans.otf') format('opentype');
+}
+
+
+
+body{
+  user-select: none;
+}
+
+/* wrapper for each element (receives transforms) */
+.layer {
+  position: absolute;
+  transform-origin: center center;
+  transform: translate(0px, 0px) rotate(0deg) scale(1);
+  will-change: transform;
+  user-select: none;
+}
+
+/* actual content inside wrapper */
+.layer > .content {
+  display: inline-block;
+  user-select: text;
+  cursor: inherit; /* let wrapper handle cursor */
+}
+
+/* text styling */
+.text-layer {
+  line-height: 1.5;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111;
+  min-width: 60px;
+  min-height: 30px;
+  white-space: pre-wrap;
+  outline: none;
+}
+
+
+.content.text-layer {
+  display: inline-block;       
+  white-space: pre-wrap;       
+  word-wrap: break-word;       
+}
+span {
+  display: inline-block;       
+  vertical-align: top;
+}
+
+/* image content */
+.layer img.content {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  pointer-events: none; /* not to interfere with wrapper events */
+}
+
+/* selection outline */
+/* .selection-outline {
+  position: absolute;
+  border: 2px solid #2563eb;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.2), 0 0 0 4px rgba(37,99,235,0.08) inset;
+} */
+/* .layer.selected-outline::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid #2563eb;
+  pointer-events: none;
+} */
+
+
+/* handles */
+.handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: white;
+  border: 2px solid #2563eb; /* blue-600 */
+  border-radius: 50%;
+  z-index: 50;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* rotate handle (top center) */
+.handle.rotate {
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: grab;
+}
+
+/* scale handle (bottom-right) */
+.handle.scale {
+  right: -12px;
+  bottom: -12px;
+  cursor: nwse-resize;
+}
+
+/* ensure canvas covers background */
+#canvasContainer {
+  background-size: cover;
+  background-position: center;
+}
+
+
+.group-wrapper {
+  outline: 1px dashed rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* .layer.selected-outline {
+  outline: 2px solid #2563eb;
+} */
+
+.group-handles {
+  border: 1.5px dashed #2563eb;
+  pointer-events: none;
+}
+

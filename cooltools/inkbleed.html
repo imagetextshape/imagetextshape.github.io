@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ink Bleed</title>
+<link rel='icon' href='https://dropzone.olk1.com/uploads/imagetextshape.png'>
+  <script src="tailwindcss.min.js"></script>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: sans-serif;
+  }
+  canvas {
+    margin-top: 20px;
+  }
+  input[type="range"], input[type="text"] {
+    width: 300px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+
+<!-- ========== NAV ========== -->
+
+<div class="bg-gray-100 gap-4 text-blue-700 flex justify-between px-1 mb-2">
+  <a href="index.html">Texture</a>
+  <a href="photocopy.html">Photocopy</a>
+  <a href="destructor.html">Destructor</a>
+</div>
+
+
+<input id="textInput" type="text" value="INK BLEED" class="my-8 outline" placeholder="Enter Text Here">
+
+<label>Ink Bleed Intensity: <span id="smearVal">6</span></label>
+<input id="smearSlider" type="range" min="0" max="10" value="6" step="1">
+
+<canvas id="textCanvas" width="1200" height="200"></canvas>
+
+<script>
+const canvas = document.getElementById("textCanvas");
+const ctx = canvas.getContext("2d");
+const smearSlider = document.getElementById("smearSlider");
+const smearVal = document.getElementById("smearVal");
+const textInput = document.getElementById("textInput");
+
+let text = textInput.value;
+const font = "bold 60px Helvetica";
+const color = "#000";
+
+function drawSmear(intensity) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.font = font;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // Draw base text
+  ctx.fillStyle = color;
+  ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+
+  // Smear effect — multiple jittered redraws
+  const passes = Math.max(300, intensity / 2);
+  const alphaDecay = 0.19;
+
+  for (let i = 0; i < passes; i++) {
+    const offsetX = (Math.random() - 0.5) * intensity;
+    const offsetY = (Math.random() - 0.5) * intensity;
+    ctx.globalAlpha = 1 - i * alphaDecay;
+    ctx.fillText(text, canvas.width / 2 + offsetX, canvas.height / 2 + offsetY);
+  }
+
+  ctx.globalAlpha = 1.0; // reset
+}
+
+// Update intensity
+smearSlider.addEventListener("input", () => {
+  smearVal.textContent = smearSlider.value;
+  drawSmear(parseFloat(smearSlider.value));
+});
+
+// Update text
+textInput.addEventListener("input", () => {
+  text = textInput.value || " "; // fallback to space if empty
+  drawSmear(parseFloat(smearSlider.value));
+});
+
+// Initial draw
+drawSmear(parseFloat(smearSlider.value));
+</script>
+
+</body>
+</html>
