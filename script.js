@@ -113,7 +113,7 @@ function applyImageFilters(img, filters = {}) {
     });
   });
 
-  // ✅ Double-click resets slider to default
+  //  Double-click resets slider to default
   input.addEventListener("dblclick", () => {
     const key = input.id.replace("Input", ""); // e.g., "brightnessInput" -> "brightness"
     input.value = DEFAULT_FILTERS[key];
@@ -227,7 +227,7 @@ function getGroupCenter() {
 
 // ---------- SELECT / DESELECT ----------
 function selectLayer(layer, addToSelection = false) {
-  // 1️⃣ If not additive, clear existing selection
+  // If not additive, clear existing selection
   if (!addToSelection) {
     selectedLayers.forEach(l => {
       l.classList.remove("selected-outline");
@@ -236,7 +236,7 @@ function selectLayer(layer, addToSelection = false) {
     selectedLayers.clear();
   }
 
-  // 2️⃣ Toggle selection for additive mode
+  // Toggle selection for additive mode
   if (selectedLayers.has(layer)) {
     if (addToSelection) {
       layer.classList.remove("selected-outline");
@@ -248,7 +248,7 @@ function selectLayer(layer, addToSelection = false) {
     layer.classList.add("selected-outline");
   }
 
-  // 3️⃣ Now manage handles
+  // Now manage handles
   removeGroupHandles();
 
   if (selectedLayers.size === 1) {
@@ -378,7 +378,7 @@ function createGroupHandles() {
     top: `${groupBox.y}px`,
     width: `${groupBox.width}px`,
     height: `${groupBox.height}px`,
-    pointerEvents: "auto", // 👈 CHANGE THIS from "none" so it receives mouse events
+    pointerEvents: "auto",
     cursor: "grab"
   });
 
@@ -409,7 +409,7 @@ function createGroupHandles() {
     zIndex: "20",
   });
 
-  enableGroupDragging(); // ✅ activate drag behavior
+  enableGroupDragging(); //  activate drag behavior
 }
 
 
@@ -464,7 +464,7 @@ function makeSelectable(layer) {
     function onMouseMove(ev) {
       if (!isDragging && (Math.abs(ev.clientX - startMouse.x) > 3 || Math.abs(ev.clientY - startMouse.y) > 3)) {
         isDragging = true;
-        startLayerInteraction(layer, e); // ✅ triggers group drag too
+        startLayerInteraction(layer, e); //  triggers group drag too
       }
     }
 
@@ -806,7 +806,7 @@ function wrapTextInSpans(container) {
       span.style.letterSpacing = letterSpacing;
       span.style.filter = `blur(${blur})`;
 
-      // ✅ Key change
+      //  Key change
       span.style.display = "inline";  
       container.appendChild(span);
     }
@@ -974,7 +974,7 @@ addImageBtn.addEventListener("click", () => {
             createImageLayer(compressedBase64, compressedSizeMB);
 
             // Update message to show final size
-            processingMsg.textContent = `✅ Done!\nFinal size: ${compressedSizeMB} MB`;
+            processingMsg.textContent = ` Done!\nFinal size: ${compressedSizeMB} MB`;
             setTimeout(() => processingMsg.remove(), 1500);
           }
         );
@@ -982,13 +982,13 @@ addImageBtn.addEventListener("click", () => {
         createImageLayer(convertedBase64, convertedSizeMB);
 
         // Update message to show final size
-        processingMsg.textContent = `✅ Done!\nFinal size: ${convertedSizeMB} MB`;
+        processingMsg.textContent = ` Done!\nFinal size: ${convertedSizeMB} MB`;
         setTimeout(() => processingMsg.remove(), 1500);
       }
     } catch (err) {
       console.error("Image conversion or processing failed:", err);
-      alert("❌ Couldn't load image. Please try another format.");
-      processingMsg.remove(); // ✅ remove message even on error
+      alert("Couldn't load image. Please try another format.");
+      processingMsg.remove(); //  remove message even on error
     }
   };
 
@@ -1044,7 +1044,7 @@ async function convertToPng(file) {
         throw new Error("Invalid HEIC conversion result");
       }
 
-      // ✅ Verify output is a valid image
+      //  Verify output is a valid image
       const testUrl = URL.createObjectURL(blob);
       const isValid = await validateImageBlob(testUrl);
       URL.revokeObjectURL(testUrl);
@@ -1053,7 +1053,7 @@ async function convertToPng(file) {
 
       return await blobToDataURL(blob);
     } catch (err) {
-      console.error("❌ HEIC conversion failed:", err);
+      console.error("HEIC conversion failed:", err);
       throw err;
     }
   }
@@ -1148,7 +1148,7 @@ function compressBase64Image(base64, quality = 0.8, callback) {
 
     callback(compressedBase64, compressedSizeMB);
   };
-  img.onerror = () => alert("❌ Failed to load image for compression.");
+  img.onerror = () => alert("Failed to load image for compression.");
   img.src = base64;
 }
 
