@@ -1,74 +1,74 @@
 @font-face {
   font-family: 'Joystix';
-  src: url('../font/Joystix.otf') format('opentype');
+  src: url('../../font/Joystix.otf') format('opentype');
 }
 @font-face {
   font-family: 'VintageB';
-  src: url('../font/VintageB.otf') format('opentype');
+  src: url('../../font/VintageB.otf') format('opentype');
 }
 @font-face {
   font-family: 'Spraypaint';
-  src: url('../font/Spraypaint.otf') format('opentype');
+  src: url('../../font/Spraypaint.otf') format('opentype');
 }
 @font-face {
   font-family: 'Silkscreen Regular';
-  src: url('../font/Silkscreen-Regular.ttf') format('truetype');
+  src: url('../../font/Silkscreen-Regular.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Silkscreen Bold';
-  src: url('../font/Silkscreen-Bold.ttf') format('truetype');
+  src: url('../../font/Silkscreen-Bold.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Headline';
-  src: url('../font/Headline.ttf') format('truetype');
+  src: url('../../font/Headline.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Roboto';
-  src: url('../font/Roboto-Medium.ttf') format('truetype');
+  src: url('../../font/Roboto-Medium.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Typewriter';
-  src: url('../font/atwriter.ttf') format('truetype');
+  src: url('../../font/atwriter.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Nineteen Forty Two';
-  src: url('../font/1942.ttf') format('truetype');
+  src: url('../../font/1942.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Draconian';
-  src: url('../font/draconian.ttf') format('truetype');
+  src: url('../../font/draconian.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Metalic';
-  src: url('../font/metalic.ttf') format('truetype');
+  src: url('../../font/metalic.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Old';
-  src: url('../font/old.ttf') format('truetype');
+  src: url('../../font/old.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Wbx';
-  src: url('../font/wbx.ttf') format('truetype');
+  src: url('../../font/wbx.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Special Elite';
-  src: url('../font/SpecialElite-Regular.ttf') format('truetype');
+  src: url('../../font/SpecialElite-Regular.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Marker';
-  src: url('../font/PermanentMarker-Regular.ttf') format('truetype');
+  src: url('../../font/PermanentMarker-Regular.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Punk';
-  src: url('../font/punk.otf') format('opentype');
+  src: url('../../font/punk.otf') format('opentype');
 }
 @font-face {
   font-family: 'ITC';
-  src: url('../font/ITCAvantGardePro-Bold.otf') format('opentype');
+  src: url('../../font/ITCAvantGardePro-Bold.otf') format('opentype');
 }
 @font-face {
   font-family: 'Resolution';
-  src: url('../font/ResolutionSans.otf') format('opentype');
+  src: url('../../font/ResolutionSans.otf') format('opentype');
 }
 
 /* Hide scrollbar for Chrome, Safari and Edge */
