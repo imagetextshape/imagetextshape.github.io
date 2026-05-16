@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typogrid</title>
+  <script src='tailwindcss.min.js'></script>
+  <link rel='shortcut icon' href='https://easycss.github.io/favicon/favicon.png' type='image/x-icon' />
+  <style>
+  @font-face {
+  font-family: 'Draconian';
+  src: url('draconian.ttf') format('truetype');
+  font-display: swap;
+}
+  @font-face {
+  font-family: 'Typewriter';
+  src: url('atwriter.ttf') format('truetype');
+  font-display: swap;
+}
+  @font-face {
+  font-family: 'Special Elite';
+  src: url('SpecialElite-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+  </style>
+</head>
+<body class="select-none">
+  <div class="w-full h-screen flex">
+
+  
+
+  <!-- Canvas -->
+  <div class="w-[1920px] h-[1080px] ml-3 mt-12 bg-white">
+    <canvas id="canvas" class=""></canvas>
+  </div>
+
+
+
+
+<!-- Controls -->
+  <div class="ml-8 w-full p-4 bg-gray-100 flex flex-col gap-4">
+    
+    <textarea id="textInput" class="w-full p-2 border rounded" rows="4" autofocus>
+
+    </textarea>
+
+
+    <button id="randomizeBtn" class="bg-cyan-400 text-white px-4 py-2 rounded mb-1">
+      Randomize Layout
+    </button>
+
+<div class="flex gap-1">
+<label class="flex items-center gap-2 text-sm">
+  <input type="checkbox" id="pathToggle"  data-toggle>
+  Show Path
+</label>
+
+
+  <select id="pathStyleSelect" class="border px-2 py-1">
+    <option value="solid">Solid</option>
+    <option value="dashed">Dashed</option>
+    <option value="dotted">Dotted</option>
+  </select>
+
+
+<label class="flex items-center gap-2 text-sm">
+  <input type="checkbox" id="gridToggle" checked data-toggle>
+  Show Grid
+</label>
+
+<label class="control-group">
+  <span class="text-sm">Dot Size</span>
+  <input
+    id="dotSizeInput"
+    type="number"
+    min="0.5"
+    max="3"
+    step="0.1"
+    value="1.3"
+  />
+</label>
+</div>
+
+
+    <select id="fontSelect" class="p-2 border rounded">
+      <option value="Inter">Inter</option>
+      <option value="Typewriter">Typewriter</option>
+      <option value="Special Elite">Special Elite</option>
+      <option value="Draconian">Draconian</option>
+      <option value="monospace">Monospace</option>
+      <option value="serif">Serif</option>
+    </select>
+
+    <label class="flex flex-col text-sm w-full">
+    Font Size
+    <input id="fontSize" type="range" min="20" max="200" value="64" />
+    </label>
+
+<div class="flex flex-col gap-4">
+
+<div class="flex gap-3">
+  <select id="renderMode">
+    <option value="fill">Fill</option>
+    <option value="stroke">Outline</option>
+    <option value="fill+stroke">Fill + Outline</option>
+  </select>
+
+
+<select id="fontVariant" class="w-full">
+  <option value="normal-normal">Regular</option>
+  <option value="normal-bold">Bold</option>
+  <option value="italic-normal">Italic</option>
+  <option value="italic-bold">Bold Italic</option>
+</select>
+</div>
+
+
+    <label class="flex flex-col text-sm">
+  Letter Spacing
+  <input id="trackingInput" type="range" min="-200" max="200" value="0" />
+</label>
+    <label class="flex flex-col text-sm">
+  Line Height
+  <input id="leadingInput" type="range" min="-200" max="200" value="0" />
+</label>
+
+
+<div class="flex justify-between w-full">
+  
+  <label class="flex flex-col text-sm">
+  Fill color
+  <input type="color" id="fontColor" value="#000000">
+  </label>
+
+  <label class="flex flex-col items-end text-sm">
+Stroke color
+  <input type="color" id="strokeColor" value="#000000">
+  </label>
+
+</div>
+
+
+
+<div class="flex">
+
+  <label class="flex flex-col text-sm w-full">
+  Stroke width
+  <input type="range" id="strokeWidth" min="1" max="10" step="1" value="2">
+  </label>
+</div>
+<!--  -->
+</div>
+
+
+
+
+
+
+
+
+
+<div class="flex flex-col gap-2 mt-2">
+
+  <!-- Dropzone -->
+  <div id="dropzone" class="text-sm bg-gray-300 border border-dashed p-4 text-center cursor-pointer mb-2">
+    Drop image or click to upload
+    <input type="file" id="fileInput" accept="image/*" class="hidden">
+  </div>
+
+  <!-- Blend mode -->
+  <select id="blendMode">
+    <option value="source-over">Normal</option>
+    <option value="multiply">Multiply</option>
+    <option value="screen">Screen</option>
+    <option value="overlay">Overlay</option>
+    <option value="darken">Darken</option>
+    <option value="lighten">Lighten</option>
+    <option value="color-dodge">Color Dodge</option>
+    <option value="color-burn">Color Burn</option>
+    <option value="hard-light">Hard Light</option>
+    <option value="soft-light">Soft Light</option>
+    <option value="difference">Difference</option>
+    <option value="exclusion">Exclusion</option>
+  </select>
+
+  <!-- Opacity -->
+  <label class="flex flex-col text-sm w-full">
+  Overlay opacity
+  <input type="range" id="opacitySlider" min="0" max="1" step="0.01" value="1">
+  </label>
+
+
+</div>
+
+
+
+<div class="flex mt-2 gap-2">
+
+    <button id="resetBtn" class="bg-red-400 text-white px-4 py-2 rounded w-full">
+      Reset Grid
+    </button>
+
+  <button id="clearOverlayBtn" class="bg-purple-400 text-white px-4 py-2 rounded w-full">Clear Overlay</button>
+</div>
+<button id="exportBtn" class="bg-black text-white px-4 py-2 rounded w-full">
+  Save PNG
+</button>
+
+
+<div class="flex-col">
+<p>R = Randomize</p>
+<p>S = Save</p>
+</div>
+  </div>
+
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

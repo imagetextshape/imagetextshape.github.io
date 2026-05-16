@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='icon' href='data:;base64,='>
+  <script src='tailwindcss.min.js'></script>
+  <link rel='stylesheet' href='style.css' />
+  <title>Text Stamp</title>
+</head>
+<body class="max-w-md mx-auto mt-2">
+  <div class="block -mt-1 mb-2">
+  <div class="flex items-center justify-between text-sm w-full mb-2 border border-gray-200 p-2">
+      
+      
+      <input
+      
+        type="color"
+        id="text-left-color-picker"
+        value="#000000"
+        class="appearance-none border-none outline-none w-6 h-6 mx-1"
+      />
+
+      <div class="flex gap-2 justify-center items-center">
+        <label for="trans-bg-left-paragraph-left-checkbox" class="pb-0.5">B/W</label>
+        <input type="checkbox" id="trans-bg-left-paragraph-left-checkbox" class="mr-1.5 w-4 h-4 scale-150" />
+        <label for="invert-paragraph-left-checkbox" class="pb-0.5">Highlight</label>
+        <input type="checkbox" id="invert-paragraph-left-checkbox" class="mr-1 w-4 h-4 scale-150" />
+
+      </div>
+    </div>
+
+  <textarea type="text" id="paragraphLeftInput" class="h-20 border border-gray-300 p-2 rounded w-full" value="" placeholder="Text left" autofocus></textarea>
+</div>
+
+
+
+
+  <canvas id="canvas"></canvas>
+
+
+
+
+
+<script src="script.js"></script>
+</body>
+</html>
