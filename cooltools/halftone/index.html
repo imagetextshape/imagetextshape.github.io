@@ -25,10 +25,149 @@
       <input id="fileInput" type="file" accept="image/*" class="hidden">
     </div>
 
+
+
+
+
+    <!-- HALFTONE -->
+    <section class="border-t border-zinc-800 pt-6 space-y-4">
+      <label class="flex items-center gap-2">
+        <input id="htEnabled" type="checkbox">
+        <span class="font-medium text-sm">Halftone</span>
+      </label>
+
+      <div>
+        <label class="text-xs">Dot Size</label>
+        <input id="htDotSize" type="range" min="1" max="12" value="4" class="w-full">
+      </div>
+
+      <div>
+        <label class="text-xs">Spacing</label>
+        <input id="htSpacing" type="range" min="4" max="30" value="0" class="w-full">
+      </div>
+
+      <div>
+        <label class="text-xs">Intensity</label>
+        <input id="htIntensity" type="range" min="0" max="1" step="0.05" value="1" class="w-full">
+      </div>
+      
+
+      <div>
+        <label class="text-xs">Angle</label>
+        <input id="htAngle" type="range" min="0" max="90" value="0" class="w-full">
+      </div>
+
+      <!-- DOT SHAPE -->
+      <div>
+        <label class="text-xs block mb-1">Dot Shape</label>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <label class="flex items-center gap-1">
+            <input type="radio" name="htShape" value="round" checked>
+            Round
+          </label>
+          <label class="flex items-center gap-1">
+            <input type="radio" name="htShape" value="square">
+            Square
+          </label>
+          <label class="flex items-center gap-1">
+            <input type="radio" name="htShape" value="triangle">
+            Triangle
+          </label>
+          <label class="flex items-center gap-1">
+            <input type="radio" name="htShape" value="line">
+            Line
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs">Blend Mode</label>
+        <select id="htBlend" class="w-full bg-zinc-800 border border-zinc-700 rounded">
+          <option>normal</option>
+          <option>multiply</option>
+          <option>screen</option>
+          <option selected>overlay</option>
+          <option>darken</option>
+          <option>lighten</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-xs">Color</label>
+        <select id="htColorMode" class="w-full bg-zinc-800 border border-zinc-700 rounded">
+          <option value="black">Black</option>
+          <option value="white">White</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input id="htColor" type="color" class="w-full h-8 hidden">
+      </div>
+    </section>
+
+
+
+
+    <!-- RASTER -->
+    <section class="border-t border-zinc-800 pt-6 space-y-4">
+      <label class="flex items-center gap-2">
+        <input id="rsEnabled" type="checkbox">
+        <span class="font-medium text-sm">Newsprint Raster</span>
+      </label>
+
+      <div>
+        <label class="text-xs">Scale</label>
+        <input id="rsScale" type="range" min="3" max="20" value="8" class="w-full">
+      </div>
+
+      <div>
+        <label class="text-xs">Strength</label>
+        <input id="rsStrength" type="range" min="0" max="1" step="0.05" value="0.5" class="w-full">
+      </div>
+
+      <div>
+        <label class="text-xs">Blend Mode</label>
+        <select id="rsBlend" class="w-full bg-zinc-800 border border-zinc-700 rounded">
+          <option>normal</option>
+          <option>multiply</option>
+          <option>overlay</option>
+          <option>screen</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-xs">Color</label>
+        <select id="rsColorMode" class="w-full bg-zinc-800 border border-zinc-700 rounded">
+          <option value="black">Black</option>
+          <option value="white">White</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input id="rsColor" type="color" class="w-full h-8 hidden">
+      </div>
+    </section>
+
+    <button id="downloadBtn" class="w-full bg-indigo-600 py-2 rounded text-sm">
+      Download
+    </button>
+
+  </aside>
+
+  <!-- PREVIEW -->
+  <main class="flex-1 bg-zinc-800 flex items-center justify-center overflow-auto">
+    <canvas id="canvas"></canvas>
+  </main>
+
+
+
+
+
+
+
+
+<aside class="w-80 bg-zinc-950 border-r border-zinc-800 p-4 space-y-8 overflow-y-auto">
+
 <!-- EARLY DIGITAL CAMERA -->
 <section class="space-y-4">
   <label class="flex items-center gap-2">
-    <input id="dcEnabled" type="checkbox" checked>
+    <input id="dcEnabled" type="checkbox">
     <span class="font-medium text-sm">Early Digital Camera (1990s)</span>
   </label>
   <div>
@@ -109,80 +248,6 @@
 
 </section>
 
-    <!-- HALFTONE -->
-    <section class="border-t border-zinc-800 pt-6 space-y-4">
-      <label class="flex items-center gap-2">
-        <input id="htEnabled" type="checkbox" checked>
-        <span class="font-medium text-sm">Halftone</span>
-      </label>
-
-      <div>
-        <label class="text-xs">Dot Size</label>
-        <input id="htDotSize" type="range" min="1" max="12" value="4" class="w-full">
-      </div>
-
-      <div>
-        <label class="text-xs">Spacing</label>
-        <input id="htSpacing" type="range" min="4" max="30" value="0" class="w-full">
-      </div>
-
-      <div>
-        <label class="text-xs">Intensity</label>
-        <input id="htIntensity" type="range" min="0" max="1" step="0.05" value="1" class="w-full">
-      </div>
-      
-
-      <div>
-        <label class="text-xs">Angle</label>
-        <input id="htAngle" type="range" min="0" max="90" value="0" class="w-full">
-      </div>
-
-      <!-- DOT SHAPE -->
-      <div>
-        <label class="text-xs block mb-1">Dot Shape</label>
-        <div class="grid grid-cols-2 gap-2 text-xs">
-          <label class="flex items-center gap-1">
-            <input type="radio" name="htShape" value="round" checked>
-            Round
-          </label>
-          <label class="flex items-center gap-1">
-            <input type="radio" name="htShape" value="square">
-            Square
-          </label>
-          <label class="flex items-center gap-1">
-            <input type="radio" name="htShape" value="triangle">
-            Triangle
-          </label>
-          <label class="flex items-center gap-1">
-            <input type="radio" name="htShape" value="line">
-            Line
-          </label>
-        </div>
-      </div>
-
-      <div>
-        <label class="text-xs">Blend Mode</label>
-        <select id="htBlend" class="w-full bg-zinc-800 border border-zinc-700 rounded">
-          <option>normal</option>
-          <option>multiply</option>
-          <option>screen</option>
-          <option selected>overlay</option>
-          <option>darken</option>
-          <option>lighten</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="text-xs">Color</label>
-        <select id="htColorMode" class="w-full bg-zinc-800 border border-zinc-700 rounded">
-          <option value="black">Black</option>
-          <option value="white">White</option>
-          <option value="custom">Custom</option>
-        </select>
-        <input id="htColor" type="color" class="w-full h-8 hidden">
-      </div>
-    </section>
-
     <!-- CROSS HATCH -->
     <section class="border-t border-zinc-800 pt-6 space-y-4">
       <label class="flex items-center gap-2">
@@ -220,55 +285,8 @@
         <input id="chColor" type="color" class="w-full h-8 hidden">
       </div>
     </section>
+</aside>
 
-    <!-- RASTER -->
-    <section class="border-t border-zinc-800 pt-6 space-y-4">
-      <label class="flex items-center gap-2">
-        <input id="rsEnabled" type="checkbox">
-        <span class="font-medium text-sm">Newsprint Raster</span>
-      </label>
-
-      <div>
-        <label class="text-xs">Scale</label>
-        <input id="rsScale" type="range" min="3" max="20" value="8" class="w-full">
-      </div>
-
-      <div>
-        <label class="text-xs">Strength</label>
-        <input id="rsStrength" type="range" min="0" max="1" step="0.05" value="0.5" class="w-full">
-      </div>
-
-      <div>
-        <label class="text-xs">Blend Mode</label>
-        <select id="rsBlend" class="w-full bg-zinc-800 border border-zinc-700 rounded">
-          <option>normal</option>
-          <option>multiply</option>
-          <option>overlay</option>
-          <option>screen</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="text-xs">Color</label>
-        <select id="rsColorMode" class="w-full bg-zinc-800 border border-zinc-700 rounded">
-          <option value="black">Black</option>
-          <option value="white">White</option>
-          <option value="custom">Custom</option>
-        </select>
-        <input id="rsColor" type="color" class="w-full h-8 hidden">
-      </div>
-    </section>
-
-    <button id="downloadBtn" class="w-full bg-indigo-600 py-2 rounded text-sm">
-      Download
-    </button>
-
-  </aside>
-
-  <!-- PREVIEW -->
-  <main class="flex-1 bg-zinc-800 flex items-center justify-center overflow-auto">
-    <canvas id="canvas"></canvas>
-  </main>
 
 </div>
 
