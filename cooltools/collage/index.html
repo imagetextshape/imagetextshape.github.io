@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    Collage Grid Layout Randomiser
+  </title>
+
+<script src='tailwindcss.min.js'></script>
+
+<style>
+body{
+  filter:brightness(2), saturate(1.5);
+}
+</style>
+</head>
+
+<body class="w-screen h-screen overflow-hidden bg-black text-white">
+
+  <div class="flex w-full h-full">
+
+    <!-- ====================================================== -->
+    <!-- LEFT -->
+    <!-- ====================================================== -->
+
+    <div class="flex-1 bg-zinc-950 p-4 overflow-hidden">
+
+      <!-- TOPBAR -->
+
+      <div class="flex justify-between items-center mb-4 mx-3">
+
+        <!-- LEFT CONTROLS -->
+
+        <div class="flex items-center gap-6">
+
+          <button
+            id="randomizeBtn"
+            class="
+              px-4
+              py-2
+              bg-green-500
+              text-white
+              font-bold
+            "
+          >
+            RANDOMIZE LAYOUT
+          </button>
+
+          <!-- BORDER CONTROL -->
+
+         <div class="flex flex-col gap-2 mt-4">
+
+  <div class="flex justify-between items-center">
+    <span class="text-xs text-zinc-400">
+      Border
+    </span>
+
+    <span
+      id="borderValue"
+      class="text-xs text-zinc-300"
+    >
+      0°
+    </span>
+  </div>
+
+  <input
+    id="borderSlider"
+    type="range"
+    min="0"
+    max="45"
+    value="0"
+    class="w-full accent-white"
+  />
+
+</div>
+
+
+
+
+
+<!-- ======================================================
+     LAYOUT SELECT
+====================================================== -->
+
+<div class="flex flex-col gap-2 mt-4">
+
+  <span class="text-xs text-zinc-400">
+    Layout
+  </span>
+
+ <select id="layoutSelect" class="w-[180px] text-sm bg-zinc-900 text-white border border-zinc-700 rounded px-2 py-1">
+
+  <!-- CORE -->
+  <option value="original">Original (Packed)</option>
+  <option value="packed">Packed</option>
+  <option value="grid">Grid</option>
+  <option value="mosaic">Mosaic</option>
+  <option value="scatter">Scatter</option>
+  <option value="strip">Strip</option>
+
+  <!-- VARIANTS -->
+  <option value="columns">Columns</option>
+  <option value="rows">Rows</option>
+  <option value="diagonal">Diagonal</option>
+  <option value="radial">Radial</option>
+  <option value="spiral">Spiral</option>
+  <option value="quilt">Quilt</option>
+  <option value="frame">Frame</option>
+  <option value="bigsmall">Big / Small</option>
+
+</select>
+
+</div>
+
+<!-- ======================================================
+     ROTATION SLIDER
+====================================================== -->
+
+<div class="flex flex-col gap-2 mt-4">
+
+  <div class="flex justify-between items-center">
+    <span class="text-xs text-zinc-400">
+      Rotation
+    </span>
+
+    <span
+      id="rotationValue"
+      class="text-xs text-zinc-300"
+    >
+      0°
+    </span>
+  </div>
+
+  <input
+    id="rotationSlider"
+    type="range"
+    min="0"
+    max="360"
+    value="0"
+    class="w-full accent-white"
+  />
+
+</div>
+
+
+
+<!--  -->
+<!--  -->
+        </div>
+
+        <!-- RIGHT CONTROLS -->
+
+        <div class="flex gap-2">
+
+          <button
+            id="clearBtn"
+            class="
+              px-4
+              py-2
+              bg-red-600
+              text-white
+              font-bold
+            "
+          >
+            CLEAR
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- STAGE -->
+
+      <div class="w-full flex items-center justify-center overflow-hidden">
+
+        <div
+          id="stage"
+          class="
+            relative
+            bg-white
+            overflow-hidden
+            shadow-2xl
+          "
+          style="
+            width:1920px;
+            height:1080px;
+          "
+        >
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- RIGHT -->
+    <!-- ====================================================== -->
+
+    <div
+      class="
+        w-[360px]
+        bg-white
+        border-l
+        border-zinc-800
+        p-4
+        overflow-y-auto
+      "
+    >
+
+      <div class="flex items-center justify-between mb-4">
+      <h2 class="text-black">Add images</h2>
+
+        <button
+          id="folderBtn"
+          class="
+            px-4
+            py-2
+            bg-purple-600
+            text-white
+            font-bold
+          "
+        >
+          ADD FOLDER
+        </button>
+
+        <input
+          id="folderInput"
+          type="file"
+          webkitdirectory
+          directory
+          multiple
+          class="hidden"
+        />
+
+      </div>
+
+      <div
+        id="slots"
+        class="
+          grid
+          grid-cols-2
+          gap-4
+        "
+      >
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js">
+
+  </script>
+
+</body>
+
+</html>
