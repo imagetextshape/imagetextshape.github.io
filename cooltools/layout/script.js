@@ -20,7 +20,7 @@ const el = {
 
   highlightOpacity: document.getElementById('highlightOpacity'),
   highlightOpacityVal: document.getElementById('highlightOpacityVal'),
-  
+
   fontSize: document.getElementById('fontSize'),
   sizeVal: document.getElementById('sizeVal'),
 
@@ -55,7 +55,6 @@ const el = {
   imageTarget: document.getElementById('imageTarget')
 };
 
-
 el.posX = document.getElementById('posX');
 el.posY = document.getElementById('posY');
 
@@ -64,98 +63,6 @@ el.yVal = document.getElementById('yVal');
 
 el.posR = document.getElementById('posR');
 el.rVal = document.getElementById('rVal');
-
-
-// ======================================================
-// POSITION HELPERS
-// ======================================================
-
-function applyPosition(node, key) {
-  const pos = state.position[key];
-
-  node.style.transform =
-    `translate(${pos.x}px, ${pos.y}px) rotate(${pos.r}deg)`;
-}
-
-
-function applyImagePosition() {
-
-  const pos = state.imagePosition;
-
-  // COVER MODE
-  if (
-    el.hero.classList.contains('object-cover')
-  ) {
-
-    el.hero.style.objectPosition =
-      `calc(50% + ${pos.x}px) calc(50% + ${pos.y}px)`;
-
-    el.hero.style.transform =
-      `rotate(${pos.r}deg)`;
-
-    return;
-  }
-
-  // CONTAIN MODE
-
-  el.hero.style.objectPosition =
-    'center center';
-
-  el.hero.style.transform =
-    `
-      translate(${pos.x}px, ${pos.y}px)
-      rotate(${pos.r}deg)
-    `;
-}
-
-
-function updatePositionFromSliders() {
-  const x = parseInt(el.posX.value, 10);
-  const y = parseInt(el.posY.value, 10);
-  const r = parseInt(el.posR.value, 10);
-
-  el.xVal.textContent = x;
-  el.yVal.textContent = y;
-  el.rVal.textContent = r;
-
-
-  // ====================================================
-  // IMAGE TARGET
-  // ====================================================
-
-  if (el.imageTarget.checked) {
-
-    state.imagePosition.x = x;
-    state.imagePosition.y = y;
-    state.imagePosition.r = r;
-
-    applyImagePosition();
-
-    return;
-  }
-
-
-  // ====================================================
-  // TEXT TARGETS
-  // ====================================================
-
-  applyToSelected(node => {
-    const key = Object.keys(textMap).find(k => textMap[k] === node);
-
-    if (!key) return;
-
-    state.position[key].x = x;
-    state.position[key].y = y;
-    state.position[key].r = r;
-
-    applyPosition(node, key);
-  });
-}
-
-
-el.posX.addEventListener('input', updatePositionFromSliders);
-el.posY.addEventListener('input', updatePositionFromSliders);
-el.posR.addEventListener('input', updatePositionFromSliders);
 
 
 // ======================================================
@@ -191,15 +98,9 @@ const state = {
   highlightMode: 'css',
   highlightOpacity: 1,
 
-  position: {
-    magazineName: { x: 0, y: 0, r: 0 },
-    issueText: { x: 0, y: 0, r: 0 },
-    headline: { x: 0, y: 0, r: 0 },
-    subheadline: { x: 0, y: 0, r: 0 },
-    sideText: { x: 0, y: 0, r: 0 },
-    descriptionText: { x: 0, y: 0, r: 0 },
-    helloworld: { x: 0, y: 0, r: 0 }
-  },
+  rawText: {},
+
+  position: {},
 
   imagePosition: {
     x: 0,
@@ -210,26 +111,50 @@ const state = {
 
 
 // ======================================================
+// INIT STATE
+// ======================================================
+
+Object.keys(textMap).forEach(key => {
+
+  state.position[key] = {
+    x: 0,
+    y: 0,
+    r: 0
+  };
+
+  state.rawText[key] =
+    textMap[key]?.textContent || '';
+
+});
+
+
+// ======================================================
 // HELPERS
 // ======================================================
 
 function applyToSelected(fn) {
+
   state.selected.forEach(key => {
+
     const node = textMap[key];
-    if (node) fn(node);
+
+    if (node) fn(node, key);
+
   });
+
 }
 
 
 function setActiveTarget(key) {
+
   state.activeTarget = key;
 
   const node = textMap[key];
+
   if (!node) return;
 
-  const clean = (node.textContent || '').trim();
-
-  el.globalText.value = clean;
+  el.globalText.value =
+    state.rawText[key] || '';
 
   const pos = state.position[key];
 
@@ -240,15 +165,296 @@ function setActiveTarget(key) {
   el.xVal.textContent = pos.x;
   el.yVal.textContent = pos.y;
   el.rVal.textContent = pos.r;
+
 }
 
 
 function updateButtonGroup(buttons, activeButton) {
+
   buttons.forEach(btn => {
-    btn.className = 'px-3 py-2 rounded bg-neutral-800';
+    btn.className =
+      'px-3 py-2 rounded bg-neutral-800';
   });
 
-  activeButton.className = 'px-3 py-2 rounded bg-white text-black';
+  activeButton.className =
+    'px-3 py-2 rounded bg-white text-black';
+
+}
+
+
+function hexToRgb(hex) {
+
+  const v = hex.replace('#', '');
+
+  const bigint = parseInt(v, 16);
+
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255
+  };
+
+}
+
+
+function getHighlightColor() {
+
+  const rgb =
+    hexToRgb(el.highlightColor.value);
+
+  const a =
+    Math.max(
+      0,
+      Math.min(1, state.highlightOpacity)
+    );
+
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`;
+
+}
+
+
+// ======================================================
+// POSITION HELPERS
+// ======================================================
+
+function applyPosition(node, key) {
+
+  const pos = state.position[key];
+
+  node.style.transform =
+    `translate(${pos.x}px, ${pos.y}px) rotate(${pos.r}deg)`;
+
+}
+
+
+function applyImagePosition() {
+
+  const pos =
+    state.imagePosition;
+
+  if (
+    el.hero.classList.contains('object-cover')
+  ) {
+
+    el.hero.style.objectPosition =
+      `calc(50% + ${pos.x}px) calc(50% + ${pos.y}px)`;
+
+    el.hero.style.transform =
+      `rotate(${pos.r}deg)`;
+
+    return;
+
+  }
+
+  el.hero.style.objectPosition =
+    'center center';
+
+  el.hero.style.transform =
+    `translate(${pos.x}px, ${pos.y}px) rotate(${pos.r}deg)`;
+
+}
+
+
+function updatePositionFromSliders() {
+
+  const x =
+    parseInt(el.posX.value, 10);
+
+  const y =
+    parseInt(el.posY.value, 10);
+
+  const r =
+    parseInt(el.posR.value, 10);
+
+  el.xVal.textContent = x;
+  el.yVal.textContent = y;
+  el.rVal.textContent = r;
+
+  // IMAGE TARGET
+
+  if (el.imageTarget.checked) {
+
+    state.imagePosition.x = x;
+    state.imagePosition.y = y;
+    state.imagePosition.r = r;
+
+    applyImagePosition();
+
+    return;
+
+  }
+
+  // TEXT TARGETS
+
+  applyToSelected((node, key) => {
+
+    state.position[key].x = x;
+    state.position[key].y = y;
+    state.position[key].r = r;
+
+    applyPosition(node, key);
+
+  });
+
+}
+
+
+el.posX.addEventListener(
+  'input',
+  updatePositionFromSliders
+);
+
+el.posY.addEventListener(
+  'input',
+  updatePositionFromSliders
+);
+
+el.posR.addEventListener(
+  'input',
+  updatePositionFromSliders
+);
+
+
+// ======================================================
+// HIGHLIGHT SYSTEM
+// ======================================================
+
+function resetHighlight(node) {
+
+  node.replaceChildren();
+
+  node.style.background = '';
+  node.style.display = '';
+  node.style.padding = '';
+
+}
+
+
+function buildLineHighlight(node, text) {
+
+  const lines =
+    text.split('\n');
+
+  const frag =
+    document.createDocumentFragment();
+
+  lines.forEach((line, index) => {
+
+    const span =
+      document.createElement('span');
+
+    span.className =
+      'line-highlight';
+
+    span.textContent =
+      line || ' ';
+
+    span.style.display =
+      'inline-block';
+
+    span.style.padding =
+      `${state.highlightPadding.y}em ${state.highlightPadding.x}em`;
+
+    span.style.margin =
+      '2px 0';
+
+    span.style.background =
+      'var(--highlight-color)';
+
+    frag.appendChild(span);
+
+    if (index < lines.length - 1) {
+      frag.appendChild(
+        document.createElement('br')
+      );
+    }
+
+  });
+
+  node.replaceChildren(frag);
+
+}
+
+
+function buildCssHighlight(node, text) {
+
+  node.textContent = text;
+
+  node.style.background =
+    'var(--highlight-color)';
+
+  node.style.display =
+    'inline-block';
+
+  node.style.padding =
+    `${state.highlightPadding.y}em ${state.highlightPadding.x}em`;
+
+}
+
+
+function applyHighlight(node, key) {
+
+  const text =
+    state.rawText[key] || '';
+
+  const color =
+    getHighlightColor();
+
+  node.style.setProperty(
+    '--highlight-color',
+    color
+  );
+
+  if (state.highlightMode === 'css') {
+
+    buildCssHighlight(node, text);
+
+    return;
+
+  }
+
+  node.style.background =
+    'transparent';
+
+  node.style.display =
+    'block';
+
+  node.style.padding =
+    '0';
+
+  buildLineHighlight(node, text);
+
+}
+
+
+function refreshHighlights() {
+
+  applyToSelected((node, key) => {
+    applyHighlight(node, key);
+  });
+
+}
+
+
+// ======================================================
+// RAF THROTTLING
+// ======================================================
+
+let highlightFrame = null;
+
+function scheduleHighlightRefresh() {
+
+  if (highlightFrame) return;
+
+  highlightFrame =
+    requestAnimationFrame(() => {
+
+      refreshHighlights();
+
+      highlightFrame = null;
+
+    });
+
 }
 
 
@@ -257,9 +463,12 @@ function updateButtonGroup(buttons, activeButton) {
 // ======================================================
 
 Object.keys(textMap).forEach(key => {
-  state.position[key] = { x: 0, y: 0, r: 0 };
 
-  applyPosition(textMap[key], key);
+  applyPosition(
+    textMap[key],
+    key
+  );
+
 });
 
 applyImagePosition();
@@ -270,11 +479,13 @@ applyImagePosition();
 // ======================================================
 
 document.querySelectorAll('.tgt').forEach(cb => {
+
   cb.addEventListener('change', () => {
 
     if (cb.checked) {
 
-      el.imageTarget.checked = false;
+      el.imageTarget.checked =
+        false;
 
       state.selected.add(cb.value);
 
@@ -284,11 +495,16 @@ document.querySelectorAll('.tgt').forEach(cb => {
 
       state.selected.delete(cb.value);
 
-      if (state.activeTarget === cb.value) {
+      if (
+        state.activeTarget === cb.value
+      ) {
         state.activeTarget = null;
       }
+
     }
+
   });
+
 });
 
 
@@ -296,37 +512,44 @@ document.querySelectorAll('.tgt').forEach(cb => {
 // IMAGE TARGET
 // ======================================================
 
-// ======================================================
-// IMAGE TARGET
-// ======================================================
-
 if (el.imageTarget) {
 
-  el.imageTarget.addEventListener('change', () => {
+  el.imageTarget.addEventListener(
+    'change',
+    () => {
 
-    if (!el.imageTarget.checked) return;
+      if (!el.imageTarget.checked)
+        return;
 
-    // deselect text targets
+      state.selected.clear();
 
-    state.selected.clear();
+      state.activeTarget =
+        null;
 
-    state.activeTarget = null;
+      document
+        .querySelectorAll('.tgt')
+        .forEach(cb => {
+          cb.checked = false;
+        });
 
-    document.querySelectorAll('.tgt').forEach(cb => {
-      cb.checked = false;
-    });
+      const pos =
+        state.imagePosition;
 
-    const pos = state.imagePosition;
+      el.posX.value = pos.x;
+      el.posY.value = pos.y;
+      el.posR.value = pos.r;
 
-    el.posX.value = pos.x;
-    el.posY.value = pos.y;
-    el.posR.value = pos.r;
+      el.xVal.textContent =
+        pos.x;
 
-    el.xVal.textContent = pos.x;
-    el.yVal.textContent = pos.y;
-    el.rVal.textContent = pos.r;
+      el.yVal.textContent =
+        pos.y;
 
-  });
+      el.rVal.textContent =
+        pos.r;
+
+    }
+  );
 
 }
 
@@ -335,207 +558,203 @@ if (el.imageTarget) {
 // LIVE TEXT EDITING
 // ======================================================
 
-el.globalText.addEventListener('input', e => {
-  if (!state.activeTarget) return;
+el.globalText.addEventListener(
+  'input',
+  e => {
 
-  const node = textMap[state.activeTarget];
-  if (!node) return;
+    if (!state.activeTarget)
+      return;
 
-  const value = e.target.value;
+    state.rawText[
+      state.activeTarget
+    ] = e.target.value;
 
-node.textContent = value;
+    const node =
+      textMap[state.activeTarget];
 
-  // keep highlight consistent on edits
-  applyHighlight(node);
-});
+    if (!node) return;
+
+    applyHighlight(
+      node,
+      state.activeTarget
+    );
+
+  }
+);
 
 
 // ======================================================
 // TYPOGRAPHY
 // ======================================================
 
-el.textColor.addEventListener('input', e => {
-  applyToSelected(node => {
-    node.style.color = e.target.value;
-  });
-});
+el.textColor.addEventListener(
+  'input',
+  e => {
 
+    applyToSelected(node => {
 
-// ======================================================
-// HIGHLIGHT SYSTEM
-// ======================================================
+      node.style.color =
+        e.target.value;
 
-function stripHighlightHTML(html) {
-  return html
-    .replace(/<\/?span[^>]*>/g, '')
-    .replace(/<br\s*\/?>/gi, '\n');
-}
+    });
 
-
-function applyHighlight(node) {
-  const text = node.textContent || '';
-
-  const rgb = hexToRgb(el.highlightColor.value);
-  const a = Math.max(0, Math.min(1, state.highlightOpacity));
-
-  const color = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${a})`;
-
-  if (state.highlightMode === 'css') {
-
-    node.style.background = color;
-node.style.display = 'inline-block';
-node.style.padding =
-  `${state.highlightPadding.y}em ${state.highlightPadding.x}em`;
-
-node.textContent = text;
-
-    return;
   }
-
-  // LINE MODE
-
-
-  const lines = text.split('\n');
-
-node.style.background = 'transparent';
-node.style.padding = '0';
-node.style.display = 'block';
-
-node.innerHTML = lines
-  .map(line => `
-    <span style="
-      background:${color};
-      padding:${state.highlightPadding.y}em ${state.highlightPadding.x}em;
-      display:inline-block;
-      margin:2px 0;
-    ">${line}</span>
-  `)
-  .join('');
-}
-
-el.gridOpacity.addEventListener('input', e => {
-  const value = e.target.value;
-
-  el.gridOpacityVal.textContent = value;
-
-  el.canvas.style.setProperty('--grid-opacity', value);
-});
-
-el.highlightColor.addEventListener('input', () => {
-  applyToSelected(applyHighlight);
-});
-
-el.highlightModeBtn.addEventListener('click', () => {
-
-  state.highlightMode =
-    state.highlightMode === 'css'
-      ? 'line'
-      : 'css';
-
-  el.highlightModeBtn.textContent =
-    state.highlightMode.toUpperCase();
-
-  applyToSelected(node => {
-
-    resetHighlight(node);
-
-    applyHighlight(node);
-
-  });
-});
+);
 
 
-function resetHighlight(node) {
-  node.textContent = node.textContent;
+// ======================================================
+// HIGHLIGHT CONTROLS
+// ======================================================
 
-  node.style.background = '';
-  node.style.display = '';
-  node.style.padding = '';
-}
+el.highlightColor.addEventListener(
+  'input',
+  scheduleHighlightRefresh
+);
 
-el.highlightOpacity.addEventListener('input', e => {
 
-  el.highlightOpacityVal.textContent =
-    e.target.value;
+el.highlightOpacity.addEventListener(
+  'input',
+  e => {
 
-  state.highlightOpacity = parseFloat(e.target.value);
+    el.highlightOpacityVal.textContent =
+      e.target.value;
 
-  applyToSelected(applyHighlight);
-});
+    state.highlightOpacity =
+      parseFloat(e.target.value);
+
+    scheduleHighlightRefresh();
+
+  }
+);
+
+
+el.highlightModeBtn.addEventListener(
+  'click',
+  () => {
+
+    state.highlightMode =
+      state.highlightMode === 'css'
+        ? 'line'
+        : 'css';
+
+    el.highlightModeBtn.textContent =
+      state.highlightMode.toUpperCase();
+
+    scheduleHighlightRefresh();
+
+  }
+);
+
+
+// ======================================================
+// GRID OPACITY
+// ======================================================
+
+el.gridOpacity.addEventListener(
+  'input',
+  e => {
+
+    const value =
+      e.target.value;
+
+    el.gridOpacityVal.textContent =
+      value;
+
+    el.canvas.style.setProperty(
+      '--grid-opacity',
+      value
+    );
+
+  }
+);
+
 
 // ======================================================
 // FONT SIZE
 // ======================================================
 
-el.fontSize.addEventListener('input', e => {
+el.fontSize.addEventListener(
+  'input',
+  e => {
 
-  el.sizeVal.textContent = e.target.value;
+    el.sizeVal.textContent =
+      e.target.value;
 
-  applyToSelected(node => {
+    applyToSelected(node => {
 
-    node.style.fontSize =
-      `${e.target.value}px`;
+      node.style.fontSize =
+        `${e.target.value}px`;
 
-  });
+    });
 
-});
+  }
+);
 
 
 // ======================================================
 // LINE HEIGHT
 // ======================================================
 
-el.lineHeight.addEventListener('input', e => {
+el.lineHeight.addEventListener(
+  'input',
+  e => {
 
-  el.lhVal.textContent =
-    e.target.value;
-
-  applyToSelected(node => {
-
-    node.style.lineHeight =
+    el.lhVal.textContent =
       e.target.value;
 
-  });
+    applyToSelected(node => {
 
-});
+      node.style.lineHeight =
+        e.target.value;
+
+    });
+
+  }
+);
 
 
 // ======================================================
 // LETTER SPACING
 // ======================================================
 
-el.letterSpacing.addEventListener('input', e => {
+el.letterSpacing.addEventListener(
+  'input',
+  e => {
 
-  el.lsVal.textContent =
-    e.target.value;
+    el.lsVal.textContent =
+      e.target.value;
 
-  applyToSelected(node => {
+    applyToSelected(node => {
 
-    node.style.letterSpacing =
-      `${e.target.value}em`;
+      node.style.letterSpacing =
+        `${e.target.value}em`;
 
-  });
+    });
 
-});
+  }
+);
 
 
 // ======================================================
 // WORD SPACING
 // ======================================================
 
-el.wordSpacing.addEventListener('input', e => {
+el.wordSpacing.addEventListener(
+  'input',
+  e => {
 
-  el.wsVal.textContent =
-    e.target.value;
+    el.wsVal.textContent =
+      e.target.value;
 
-  applyToSelected(node => {
+    applyToSelected(node => {
 
-    node.style.wordSpacing =
-      `${e.target.value}em`;
+      node.style.wordSpacing =
+        `${e.target.value}em`;
 
-  });
+    });
 
-});
+  }
+);
 
 
 // ======================================================
@@ -559,10 +778,14 @@ function updateFontStyles() {
       bold ? '800' : '400';
 
     node.style.fontStyle =
-      italic ? 'italic' : 'normal';
+      italic
+        ? 'italic'
+        : 'normal';
 
     node.style.textDecoration =
-      underline ? 'underline' : 'none';
+      underline
+        ? 'underline'
+        : 'none';
 
   });
 
@@ -573,12 +796,14 @@ function updateFontStyles() {
   el.bold,
   el.italic,
   el.underline
-].forEach(elm =>
+].forEach(elm => {
+
   elm.addEventListener(
     'change',
     updateFontStyles
-  )
-);
+  );
+
+});
 
 
 // ======================================================
@@ -595,8 +820,12 @@ function loadImage(file) {
   const reader =
     new FileReader();
 
-  reader.onload = e =>
-    (el.hero.src = e.target.result);
+  reader.onload = e => {
+
+    el.hero.src =
+      e.target.result;
+
+  };
 
   reader.readAsDataURL(file);
 
@@ -645,122 +874,143 @@ document.addEventListener(
 // IMAGE FIT + ALIGNMENT
 // ======================================================
 
-el.coverBtn.addEventListener('click', () => {
+el.coverBtn.addEventListener(
+  'click',
+  () => {
 
-  el.hero.className =
-    'absolute inset-0 w-full h-full object-cover';
+    el.hero.className =
+      'absolute inset-0 w-full h-full object-cover';
 
-  updateButtonGroup(
-    [el.coverBtn, el.containBtn],
-    el.coverBtn
-  );
+    updateButtonGroup(
+      [
+        el.coverBtn,
+        el.containBtn
+      ],
+      el.coverBtn
+    );
 
-});
+    applyImagePosition();
 
-
-el.containBtn.addEventListener('click', () => {
-
-  el.hero.className =
-    'absolute inset-0 w-full h-full object-contain';
-
-  updateButtonGroup(
-    [el.coverBtn, el.containBtn],
-    el.containBtn
-  );
-
-});
+  }
+);
 
 
-el.leftBtn.addEventListener('click', () => {
+el.containBtn.addEventListener(
+  'click',
+  () => {
 
-  el.hero.style.objectPosition =
-    'left center';
+    el.hero.className =
+      'absolute inset-0 w-full h-full object-contain';
 
-  updateButtonGroup(
-    [
-      el.leftBtn,
-      el.centerBtn,
+    updateButtonGroup(
+      [
+        el.coverBtn,
+        el.containBtn
+      ],
+      el.containBtn
+    );
+
+    applyImagePosition();
+
+  }
+);
+
+
+el.leftBtn.addEventListener(
+  'click',
+  () => {
+
+    el.hero.style.objectPosition =
+      'left center';
+
+    updateButtonGroup(
+      [
+        el.leftBtn,
+        el.centerBtn,
+        el.rightBtn
+      ],
+      el.leftBtn
+    );
+
+  }
+);
+
+
+el.centerBtn.addEventListener(
+  'click',
+  () => {
+
+    el.hero.style.objectPosition =
+      'center center';
+
+    updateButtonGroup(
+      [
+        el.leftBtn,
+        el.centerBtn,
+        el.rightBtn
+      ],
+      el.centerBtn
+    );
+
+  }
+);
+
+
+el.rightBtn.addEventListener(
+  'click',
+  () => {
+
+    el.hero.style.objectPosition =
+      'right center';
+
+    updateButtonGroup(
+      [
+        el.leftBtn,
+        el.centerBtn,
+        el.rightBtn
+      ],
       el.rightBtn
-    ],
-    el.leftBtn
-  );
+    );
 
-});
-
-
-el.centerBtn.addEventListener('click', () => {
-
-  el.hero.style.objectPosition =
-    'center center';
-
-  updateButtonGroup(
-    [
-      el.leftBtn,
-      el.centerBtn,
-      el.rightBtn
-    ],
-    el.centerBtn
-  );
-
-});
-
-
-el.rightBtn.addEventListener('click', () => {
-
-  el.hero.style.objectPosition =
-    'right center';
-
-  updateButtonGroup(
-    [
-      el.leftBtn,
-      el.centerBtn,
-      el.rightBtn
-    ],
-    el.rightBtn
-  );
-
-});
+  }
+);
 
 
 // ======================================================
 // OVERLAY + BACKGROUND
 // ======================================================
 
-el.overlayColor.addEventListener('input', e => {
+el.overlayColor.addEventListener(
+  'input',
+  e => {
 
-  el.overlay.style.background =
-    e.target.value;
+    el.overlay.style.background =
+      e.target.value;
 
-});
-
-
-el.overlayOpacity.addEventListener('input', e => {
-
-  el.overlayOpacityVal.textContent =
-    e.target.value;
-
-  el.overlay.style.opacity =
-    e.target.value;
-
-});
+  }
+);
 
 
-el.bgPicker.addEventListener('input', e => {
+el.overlayOpacity.addEventListener(
+  'input',
+  e => {
 
-  el.canvas.style.background =
-    e.target.value;
+    el.overlayOpacityVal.textContent =
+      e.target.value;
 
-});
+    el.overlay.style.opacity =
+      e.target.value;
+
+  }
+);
 
 
+el.bgPicker.addEventListener(
+  'input',
+  e => {
 
-function hexToRgb(hex) {
-  const v = hex.replace('#', '');
-  const bigint = parseInt(v, 16);
+    el.canvas.style.background =
+      e.target.value;
 
-  return {
-    r: (bigint >> 16) & 255,
-    g: (bigint >> 8) & 255,
-    b: bigint & 255
-  };
-}
+  }
+);
