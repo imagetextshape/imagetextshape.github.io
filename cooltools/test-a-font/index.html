@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Test A Font</title>
-
+<link rel='icon' href='data:;base64,='>
 <script src='tailwindcss.min.js'></script>
 
 <style>
@@ -220,6 +220,12 @@ abcdefghijklmnopqrstuvwxyz
 
         </div>
 
+
+<button
+    id="downloadPng"
+    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 w-full">
+    Download PNG
+</button>
     </aside>
 
     <!-- PREVIEW -->
@@ -414,6 +420,190 @@ document
 
 updatePreview();
 
+//
+//
+//
+//
+//
+//
+//
+const downloadPng = document.getElementById('downloadPng');
+
+downloadPng.addEventListener('click', async () => {
+
+    await document.fonts.ready;
+
+    if (loadedFontName) {
+        await document.fonts.load(`16px "${loadedFontName}"`);
+    }
+
+    const padding = 60;
+
+    const text = textInput.value || '';
+
+    const fontSizeVal = Number(fontSize.value);
+    const lineHeightScale = Number(lineHeight.value) / 100;
+    const letterSpacingVal = Number(letterSpacing.value);
+    const wordSpacingVal = Number(wordSpacing.value);
+
+    const alignment = document.querySelector(
+        'input[name="align"]:checked'
+    ).value;
+
+    const isBold = bold.checked;
+    const isItalic = italic.checked;
+    const isUppercase = uppercase.checked;
+    const isSmallCaps = smallCaps.checked;
+
+    const fontFamily = loadedFontName
+        ? `"${loadedFontName}"`
+        : 'sans-serif';
+
+    // -------------------------
+    // TEMP CANVAS FOR MEASURING
+    // -------------------------
+    const measureCanvas = document.createElement('canvas');
+    const mctx = measureCanvas.getContext('2d');
+
+    mctx.font = `${isItalic ? 'italic ' : ''}${isBold ? '700' : '400'} ${fontSizeVal}px ${fontFamily}`;
+
+    const lines = text.split('\n');
+
+    const layout = [];
+    let maxWidth = 0;
+
+    for (const line of lines) {
+
+        const tokens = line.split(/(\s+)/); // KEEP SPACES
+
+        let lineWidth = 0;
+        const tokenBlocks = [];
+
+        for (const token of tokens) {
+
+            // -------------------------
+            // SPACE TOKEN
+            // -------------------------
+            if (token.trim() === '') {
+
+                const spaceWidth = mctx.measureText(token).width;
+
+                tokenBlocks.push({
+                    type: 'space',
+                    raw: token,
+                    width: spaceWidth
+                });
+
+                lineWidth += spaceWidth;
+                continue;
+            }
+
+            // -------------------------
+            // WORD TOKEN
+            // -------------------------
+            const displayToken =
+                isUppercase
+                    ? token.toUpperCase()
+                    : isSmallCaps
+                        ? token.toUpperCase()
+                        : token;
+
+            const chars = [...displayToken];
+
+            const measuredChars = chars.map(ch => ({
+                ch,
+                w: mctx.measureText(ch).width
+            }));
+
+            const wordWidth =
+                measuredChars.reduce((a, c) => a + c.w, 0) +
+                letterSpacingVal * Math.max(chars.length - 1, 0);
+
+            tokenBlocks.push({
+                type: 'word',
+                chars: measuredChars,
+                width: wordWidth
+            });
+
+            lineWidth += wordWidth;
+        }
+
+        maxWidth = Math.max(maxWidth, lineWidth);
+
+        layout.push({
+            tokens: tokenBlocks,
+            lineWidth
+        });
+    }
+
+    // -------------------------
+    // CANVAS SIZE
+    // -------------------------
+    const lineHeightPx = fontSizeVal * lineHeightScale;
+
+    const canvasWidth = Math.max(1, Math.ceil(maxWidth + padding * 2));
+    const canvasHeight = Math.max(
+        1,
+        Math.ceil(layout.length * lineHeightPx + padding * 2)
+    );
+
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    const ctx = canvas.getContext('2d');
+
+    ctx.textBaseline = 'top';
+    ctx.font = `${isItalic ? 'italic ' : ''}${isBold ? '700' : '400'} ${fontSizeVal}px ${fontFamily}`;
+    ctx.fillStyle = previewText.style.color || '#000';
+
+    let y = padding;
+
+    // -------------------------
+    // RENDER PASS
+    // -------------------------
+    for (const line of layout) {
+
+        let x;
+
+        if (alignment === 'center') {
+            x = (canvas.width - line.lineWidth) / 2;
+        } else if (alignment === 'right') {
+            x = canvas.width - line.lineWidth - padding;
+        } else {
+            x = padding;
+        }
+
+        for (const token of line.tokens) {
+
+            // SPACE
+            if (token.type === 'space') {
+                x += token.width + wordSpacingVal;
+                continue;
+            }
+
+            // WORD
+            for (const ch of token.chars) {
+
+                ctx.fillText(ch.ch, x, y);
+                x += ch.w + letterSpacingVal;
+            }
+
+            // add word spacing AFTER word
+            x += wordSpacingVal;
+        }
+
+        y += lineHeightPx;
+    }
+
+    // -------------------------
+    // DOWNLOAD
+    // -------------------------
+    const link = document.createElement('a');
+    link.download = 'text.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+});
 </script>
 
 </body>
