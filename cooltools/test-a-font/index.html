@@ -146,6 +146,23 @@ music
             >
         </div>
 
+        <!-- Outline -->
+        <div>
+            <div class="flex justify-between mb-1">
+                <span>Outline</span>
+                <span id="textStrokeThicknessValue">0</span>
+            </div>
+
+            <input 
+              type="range" 
+              id="textStrokeThickness" 
+              min="0" 
+              max="100" 
+              value="0" 
+              step="1" 
+              class="w-full">
+        </div>
+
         <!-- Style Options -->
         <div class="space-y-2">
 
@@ -266,11 +283,13 @@ const fontSize = document.getElementById('fontSize');
 const lineHeight = document.getElementById('lineHeight');
 const letterSpacing = document.getElementById('letterSpacing');
 const wordSpacing = document.getElementById('wordSpacing');
+const textStrokeThickness = document.getElementById('textStrokeThickness');
 
 const fontSizeValue = document.getElementById('fontSizeValue');
 const lineHeightValue = document.getElementById('lineHeightValue');
 const letterSpacingValue = document.getElementById('letterSpacingValue');
 const wordSpacingValue = document.getElementById('wordSpacingValue');
+const textStrokeThicknessValue = document.getElementById('textStrokeThicknessValue');
 
 const bold = document.getElementById('bold');
 const italic = document.getElementById('italic');
@@ -288,16 +307,21 @@ function updatePreview() {
     const lh = Number(lineHeight.value);
     const ls = Number(letterSpacing.value);
     const ws = Number(wordSpacing.value);
+    const ts = Number(textStrokeThickness.value);
 
     fontSizeValue.textContent = size;
     lineHeightValue.textContent = lh.toFixed(2);
     letterSpacingValue.textContent = ls;
     wordSpacingValue.textContent = ws;
+    textStrokeThicknessValue.textContent = ts;
 
     previewText.style.fontSize = `${size}px`;
     previewText.style.lineHeight = lh;
     previewText.style.letterSpacing = `${ls}px`;
     previewText.style.wordSpacing = `${ws}px`;
+    
+    previewText.style.webkitTextStroke =
+    `${ts}px #000`;
 
     previewText.style.fontWeight =
         bold.checked ? '700' : '400';
@@ -394,6 +418,7 @@ fontFile.addEventListener('change', async e => {
     lineHeight,
     letterSpacing,
     wordSpacing,
+    textStrokeThickness,
     bold,
     italic,
     smallCaps,
@@ -451,6 +476,7 @@ downloadPng.addEventListener('click', async () => {
     const lineHeightScale = Number(lineHeight.value) / 100;
     const letterSpacingVal = Number(letterSpacing.value);
     const wordSpacingVal = Number(wordSpacing.value);
+    const textStrokeThicknessVal = Number(textStrokeThickness.value);
 
     const alignment = document.querySelector(
         'input[name="align"]:checked'
@@ -588,11 +614,19 @@ downloadPng.addEventListener('click', async () => {
                 continue;
             }
 
-            // WORD
-            for (const ch of token.chars) {
+ctx.lineWidth = textStrokeThicknessVal;
+ctx.strokeStyle = "#000";
+ctx.lineJoin = "round";
+ctx.lineCap = "round";
 
-                ctx.fillText(ch.ch, x, y);
-                x += ch.w + letterSpacingVal;
+            // WORD
+          for (const ch of token.chars) {
+            if(textStrokeThicknessVal > 0){
+              ctx.strokeText(ch.ch, x, y);
+      }
+
+              ctx.fillText(ch.ch, x, y);
+              x += ch.w + letterSpacingVal;
             }
 
             // add word spacing AFTER word
