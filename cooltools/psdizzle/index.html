@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<title>PSD Carousel</title>
+</head>
+
+<body class="bg-gray-100 mt-4">
+
+<div class="max-w-[1680px] mx-auto p-0">
+
+    <div
+        id="dropZone"
+        class="border-4 border-dashed border-gray-400 rounded-xl h-16 flex items-center justify-center text-gray-500 cursor-pointer transition hover:bg-gray-50">
+
+        Drop PSD files here
+        <input
+            id="fileInput"
+            type="file"
+            multiple
+            accept=".psd"
+            class="hidden">
+    </div>
+
+    <div class="mt-8 relative">
+
+        <button
+            id="prev"
+            class="absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full z-10">
+            ◀
+        </button>
+
+        <div
+            id="viewer"
+            class="overflow-hidden rounded-xl bg-white h-[1080px] flex items-center justify-center">
+
+            <img
+                id="image"
+                class="max-w-full max-h-full object-contain">
+
+        </div>
+
+        <button
+            id="next"
+            class="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full z-10">
+            ▶
+        </button>
+
+    </div>
+
+    <div
+        id="counter"
+        class="text-center mt-4 text-gray-600">
+        0 / 0
+    </div>
+
+</div>
+
+<script type="module">
+import { readPsd } from "https://cdn.jsdelivr.net/npm/ag-psd/+esm";
+
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+
+const image = document.getElementById("image");
+const counter = document.getElementById("counter");
+
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
+
+const slides = [];
+
+let current = 0;
+
+dropZone.addEventListener("click", () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener("change", e => {
+    loadFiles(e.target.files);
+});
+
+dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("bg-blue-50");
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("bg-blue-50");
+});
+
+dropZone.addEventListener("drop", e => {
+
+    e.preventDefault();
+
+    dropZone.classList.remove("bg-blue-50");
+
+    loadFiles(e.dataTransfer.files);
+
+});
+
+async function loadFiles(files){
+
+    for(const file of files){
+
+        if(!file.name.toLowerCase().endsWith(".psd"))
+            continue;
+
+        const buffer = await file.arrayBuffer();
+
+        const psd = readPsd(buffer);
+
+        if(!psd.canvas)
+            continue;
+
+        slides.push({
+            name:file.name,
+            url:psd.canvas.toDataURL()
+        });
+
+    }
+
+    showSlide();
+
+}
+
+function showSlide(){
+
+    if(slides.length===0){
+
+        image.removeAttribute("src");
+
+        counter.textContent="0 / 0";
+
+        return;
+
+    }
+
+    image.src=slides[current].url;
+
+    counter.textContent=
+        `${current+1} / ${slides.length}`;
+
+}
+
+prev.onclick=()=>{
+
+    if(!slides.length) return;
+
+    current--;
+
+    if(current<0)
+        current=slides.length-1;
+
+    showSlide();
+
+};
+
+next.onclick=()=>{
+
+    if(!slides.length) return;
+
+    current++;
+
+    if(current>=slides.length)
+        current=0;
+
+    showSlide();
+
+};
+
+window.addEventListener("keydown",e=>{
+
+    if(e.key==="ArrowLeft")
+        prev.click();
+
+    if(e.key==="ArrowRight")
+        next.click();
+
+});
+</script>
+
+</body>
+</html>
+
+

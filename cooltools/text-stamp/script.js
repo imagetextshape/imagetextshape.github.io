@@ -37,8 +37,8 @@ document.addEventListener(
     // CANVAS
     //
 
-    canvas.width = 600;
-    canvas.height = 800;
+    canvas.width = 800;
+    canvas.height = 1080;
 
     //
     // FONT

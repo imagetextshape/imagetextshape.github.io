@@ -8,38 +8,70 @@
   <link rel='stylesheet' href='style.css' />
   <title>Text Stamp</title>
 </head>
-<body class="max-w-md mx-auto mt-2">
-  <div class="block -mt-1 mb-2">
-  <div class="flex items-center justify-between text-sm w-full mb-2 border border-gray-200 p-2">
-      
-      
-      <input
-      
-        type="color"
-        id="text-left-color-picker"
-        value="#000000"
-        class="appearance-none border-none outline-none w-6 h-6 mx-1"
-      />
 
-      <div class="flex gap-2 justify-center items-center">
-        <label for="trans-bg-left-paragraph-left-checkbox" class="pb-0.5">B/W</label>
-        <input type="checkbox" id="trans-bg-left-paragraph-left-checkbox" class="mr-1.5 w-4 h-4 scale-150" />
-        <label for="invert-paragraph-left-checkbox" class="pb-0.5">Highlight</label>
-        <input type="checkbox" id="invert-paragraph-left-checkbox" class="mr-1 w-4 h-4 scale-150" />
 
-      </div>
+<body class="h-screen overflow-hidden">
+
+    <div class="flex h-full">
+
+        <!-- LEFT PANEL -->
+        <aside class="w-80 shrink-0 p-2 flex flex-col gap-2 bg-white border-r border-gray-200">
+
+            <div class="flex items-center justify-between text-sm border border-gray-200 p-2 rounded">
+
+                <input
+                    type="color"
+                    id="text-left-color-picker"
+                    value="#000000"
+                    class="appearance-none border-none outline-none w-6 h-6">
+
+                <div class="flex items-center gap-2">
+
+                    <label for="trans-bg-left-paragraph-left-checkbox">
+                        B/W
+                    </label>
+
+                    <input
+                        type="checkbox"
+                        id="trans-bg-left-paragraph-left-checkbox"
+                        class="w-4 h-4 scale-125">
+
+                    <label for="invert-paragraph-left-checkbox">
+                        Highlight
+                    </label>
+
+                    <input
+                        type="checkbox"
+                        id="invert-paragraph-left-checkbox"
+                        class="w-4 h-4 scale-125">
+
+                </div>
+
+            </div>
+
+            <textarea
+                id="paragraphLeftInput"
+                class="h-full border border-gray-300 rounded p-2 resize-none"
+                placeholder="Say something pithy"
+                autofocus></textarea>
+
+        </aside>
+
+        <!-- CANVAS -->
+       <main class="flex-1 overflow-auto bg-gray-100">
+
+    <div class="w-full h-full flex justify-center items-start pt-0">
+
+        <canvas
+            id="canvas"
+            class="block border-[50px] border-white shrink-0"></canvas>
+
     </div>
 
-  <textarea type="text" id="paragraphLeftInput" class="h-20 border border-gray-300 p-2 rounded w-full" value="" placeholder="Text left" autofocus></textarea>
-</div>
+</main>
+    </div>
 
-
-
-
-  <canvas id="canvas"></canvas>
-
-
-
+</body>
 
 
 <script src="script.js"></script>
