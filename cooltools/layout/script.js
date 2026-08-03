@@ -6,12 +6,16 @@ const el = {
   canvas: document.getElementById('canvas'),
   hero: document.getElementById('heroImage'),
   overlay: document.getElementById('imageOverlay'),
+  toggleCanvasSize: document.getElementById("toggleCanvasSize"),
 
+  gridStyle: document.getElementById('gridStyle'),
   gridOpacity: document.getElementById('gridOpacity'),
   gridOpacityVal: document.getElementById('gridOpacityVal'),
 
   dropzone: document.getElementById('dropzone'),
   imageInput: document.getElementById('imageInput'),
+
+  imageBlendMode: document.getElementById("imageBlendMode"),
 
   globalText: document.getElementById('globalText'),
 
@@ -21,6 +25,7 @@ const el = {
   highlightOpacity: document.getElementById('highlightOpacity'),
   highlightOpacityVal: document.getElementById('highlightOpacityVal'),
 
+fontFamily: document.getElementById("fontFamily"),
   fontSize: document.getElementById('fontSize'),
   sizeVal: document.getElementById('sizeVal'),
 
@@ -52,8 +57,13 @@ const el = {
 
   highlightModeBtn: document.getElementById('highlightModeBtn'),
 
-  imageTarget: document.getElementById('imageTarget')
+  imageTarget: document.getElementById('imageTarget'),
+
+  imageScale: document.getElementById("imageScale"),
+  scaleVal: document.getElementById("scaleVal"),
 };
+
+// cache
 
 el.posX = document.getElementById('posX');
 el.posY = document.getElementById('posY');
@@ -65,21 +75,68 @@ el.posR = document.getElementById('posR');
 el.rVal = document.getElementById('rVal');
 
 
+el.svgW = document.getElementById("svgW");
+el.svgH = document.getElementById("svgH");
+
+el.svgX1 = document.getElementById("svgX1");
+el.svgX2 = document.getElementById("svgX2");
+
+el.svgY1 = document.getElementById("svgY1");
+el.svgY2 = document.getElementById("svgY2");
+
+el.svgRotation = document.getElementById("svgRotation");
+
+el.svgStrokeWidth = document.getElementById("svgStrokeWidth");
+
+el.svgOpacity = document.getElementById("svgOpacity");
+
+el.customSvgControls = document.getElementById("customSvgControls");
 // ======================================================
 // TEXT ELEMENTS
 // ======================================================
 
 const textMap = {
-  magazineName: document.getElementById('magazineName'),
-  issueText: document.getElementById('issueText'),
-  headline: document.getElementById('headline'),
+  ec: document.getElementById('ec'),
   subheadline: document.getElementById('subheadline'),
-  sideText: document.getElementById('sideText'),
-  descriptionText: document.getElementById('descriptionText'),
+  issue: document.getElementById('issue'),
+  headline: document.getElementById('headline'),
+  editorial: document.getElementById('editorial'),
+  description: document.getElementById('description'),
   helloworld: document.getElementById('helloworld')
 };
 
+const targetLabels = {};
 
+document.querySelectorAll(".tgt").forEach(cb => {
+
+    const label =
+        cb.parentElement.querySelector(".target-label");
+
+    if (label) {
+        targetLabels[cb.value] = label;
+    }
+
+});
+
+function updateTargetLabels() {
+
+    Object.keys(targetLabels).forEach(key => {
+
+        const text =
+            state.rawText[key] || "";
+
+        const label =
+            text
+                .replace(/\s+/g, " ")
+                .trim()
+                .slice(0, 12);
+
+        targetLabels[key].textContent =
+            label || key;
+
+    });
+
+}
 // ======================================================
 // STATE
 // ======================================================
@@ -91,12 +148,12 @@ const state = {
   gridOpacity: 0.5,
 
   highlightPadding: {
-    y: 0.2,
-    x: 0.4
+    y: 0.0,
+    x: 0.1
   },
 
   highlightMode: 'css',
-  highlightOpacity: 1,
+  highlightOpacity: 0,
 
   rawText: {},
 
@@ -105,11 +162,56 @@ const state = {
   imagePosition: {
     x: 0,
     y: 0,
-    r: 0
-  }
+    r: 0,
+    scale: 1,
+    blendMode: "normal"
+  },
+
+  fontFamily: {}
 };
 
 
+// toggle canvas size
+const canvasSizes = {
+    portrait: {
+        width: "540px",
+        height: "960px"
+    },
+    landscape: {
+        width: "1920px",
+        height: "1080px"
+    }
+};
+
+el.canvas.style.width = canvasSizes.portrait.width;
+el.canvas.style.height = canvasSizes.portrait.height;
+el.canvas.style.background = "#111";
+
+let mode = "portrait";
+
+function updateCanvasSize() {
+
+    const size = canvasSizes[mode];
+
+    el.canvas.style.width = size.width;
+    el.canvas.style.height = size.height;
+
+     el.toggleCanvasSize.textContent =
+        mode === "portrait"
+            ? "Landscape (1920x1080px)"
+            : "Portrait (540x960px)";
+
+}
+
+el.toggleCanvasSize.addEventListener("click", () => {
+
+    mode = mode === "portrait"
+        ? "landscape"
+        : "portrait";
+
+    updateCanvasSize();
+
+});
 // ======================================================
 // INIT STATE
 // ======================================================
@@ -121,12 +223,15 @@ Object.keys(textMap).forEach(key => {
     y: 0,
     r: 0
   };
+  
+  state.fontFamily[key] = "Helvetica";
 
   state.rawText[key] =
-    textMap[key]?.textContent || '';
+    (textMap[key]?.textContent || '').trim();
 
 });
 
+updateTargetLabels();
 
 // ======================================================
 // HELPERS
@@ -152,6 +257,9 @@ function setActiveTarget(key) {
   const node = textMap[key];
 
   if (!node) return;
+
+el.fontFamily.value =
+    state.fontFamily[key];
 
   el.globalText.value =
     state.rawText[key] || '';
@@ -240,7 +348,7 @@ function applyImagePosition() {
       `calc(50% + ${pos.x}px) calc(50% + ${pos.y}px)`;
 
     el.hero.style.transform =
-      `rotate(${pos.r}deg)`;
+    `scale(${pos.scale}) rotate(${pos.r}deg)`;
 
     return;
 
@@ -250,8 +358,12 @@ function applyImagePosition() {
     'center center';
 
   el.hero.style.transform =
-    `translate(${pos.x}px, ${pos.y}px) rotate(${pos.r}deg)`;
+    `translate(${pos.x}px, ${pos.y}px)
+     scale(${pos.scale})
+     rotate(${pos.r}deg)`;
 
+  el.hero.style.mixBlendMode =
+    state.imagePosition.blendMode;
 }
 
 
@@ -539,6 +651,14 @@ if (el.imageTarget) {
       el.posY.value = pos.y;
       el.posR.value = pos.r;
 
+      // Scale
+el.imageScale.value = pos.scale * 100;
+el.scaleVal.textContent = `${el.imageScale.value}%`;
+
+// Blend mode
+el.imageBlendMode.value =
+    state.imagePosition.blendMode;
+
       el.xVal.textContent =
         pos.x;
 
@@ -565,23 +685,29 @@ el.globalText.addEventListener(
     if (!state.activeTarget)
       return;
 
+
     state.rawText[
       state.activeTarget
     ] = e.target.value;
 
+
     const node =
       textMap[state.activeTarget];
 
+
     if (!node) return;
+
 
     applyHighlight(
       node,
       state.activeTarget
     );
 
+
+    updateTargetLabels();
+
   }
 );
-
 
 // ======================================================
 // TYPOGRAPHY
@@ -601,6 +727,27 @@ el.textColor.addEventListener(
   }
 );
 
+
+// ======================================================
+// FONT FAMILY
+// ======================================================
+
+el.fontFamily.addEventListener(
+  "change",
+  e => {
+
+    applyToSelected((node, key) => {
+
+      state.fontFamily[key] =
+        e.target.value;
+
+      node.style.fontFamily =
+        e.target.value;
+
+    });
+
+  }
+);
 
 // ======================================================
 // HIGHLIGHT CONTROLS
@@ -647,26 +794,232 @@ el.highlightModeBtn.addEventListener(
 
 
 // ======================================================
+// GRID STYLES
+// ======================================================
+
+// ======================================================
+// CUSTOM SVG GRID
+// ======================================================
+
+function updateCustomSVGGrid(){
+
+    const w =
+        el.svgW.value;
+
+    const h =
+        el.svgH.value;
+
+    const x1 =
+        el.svgX1.value;
+
+    const x2 =
+        el.svgX2.value;
+
+    const y1 =
+        el.svgY1.value;
+
+    const y2 =
+        el.svgY2.value;
+
+    const strokeWidth =
+        el.svgStrokeWidth.value;
+
+    const opacity =
+        el.svgOpacity.value;
+
+    const rotation =
+        el.svgRotation.value;
+
+
+    const cx = w / 2;
+    const cy = h / 2;
+
+
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="${w}"
+         height="${h}">
+
+        <g transform="rotate(${rotation} ${cx} ${cy})">
+
+            <line
+                x1="${x1}"
+                y1="${cy}"
+                x2="${x2}"
+                y2="${cy}"
+                stroke="white"
+                stroke-opacity="${opacity}"
+                stroke-width="${strokeWidth}"
+            />
+
+            <line
+                x1="${cx}"
+                y1="${y1}"
+                x2="${cx}"
+                y2="${y2}"
+                stroke="white"
+                stroke-opacity="${opacity}"
+                stroke-width="${strokeWidth}"
+            />
+
+        </g>
+
+    </svg>
+    `;
+
+
+    el.canvas.style.setProperty(
+        "--custom-grid-svg",
+        `url("data:image/svg+xml,${encodeURIComponent(svg)}")`
+    );
+
+}
+
+
+[
+    el.svgW,
+    el.svgH,
+    el.svgX1,
+    el.svgX2,
+    el.svgY1,
+    el.svgY2,
+    el.svgStrokeWidth,
+    el.svgOpacity,
+    el.svgRotation
+
+].forEach(input => {
+
+    input.addEventListener(
+        "input",
+        updateCustomSVGGrid
+    );
+
+});
+
+
+updateCustomSVGGrid();
+
+
+// ======================================================
+// GRID STYLES
+// ======================================================
+
+const gridClasses = [
+    "grid-lines",
+    "grid-dots",
+    "grid-lines-dots",
+    "grid-crosses",
+    "grid-crosses-12",
+    "grid-crosses-12-thick",
+    "grid-crosses-large",
+    "grid-crosses-xl",
+    "grid-crosses-2xl",
+    "grid-crosses-spaced",
+    "grid-thirds",
+    "grid-golden",
+    "grid-diagonals",
+    "grid-baseline",
+    "grid-columns",
+    "custom-svg-grid"
+];
+
+
+const svgGridClasses = [
+    "grid-crosses",
+    "grid-crosses-12",
+    "grid-crosses-12-thick",
+    "grid-crosses-large",
+    "grid-crosses-xl",
+    "grid-crosses-2xl",
+    "grid-crosses-spaced"
+];
+
+
+function updateGridStyle(){
+
+    el.canvas.classList.remove(
+        ...gridClasses
+    );
+
+
+    const style =
+        el.gridStyle.value;
+
+
+    if(style){
+
+        el.canvas.classList.add(
+            style
+        );
+
+    }
+
+
+    // Fixed SVG grids
+    const isFixedSVG =
+        svgGridClasses.includes(style);
+
+
+    el.gridOpacity.disabled =
+        isFixedSVG;
+
+
+    el.gridOpacity.classList.toggle(
+        "opacity-40",
+        isFixedSVG
+    );
+
+    el.gridOpacity.classList.toggle(
+        "cursor-not-allowed",
+        isFixedSVG
+    );
+
+
+    // Custom SVG controls
+    const isCustomSVG =
+        style === "custom-svg-grid";
+
+
+    el.customSvgControls.classList.toggle(
+        "hidden",
+        !isCustomSVG
+    );
+
+
+    if(isCustomSVG){
+
+        updateCustomSVGGrid();
+
+    }
+
+}
+
+
+el.gridStyle.addEventListener(
+    "change",
+    updateGridStyle
+);
+
+
+updateGridStyle();
+
+
+// ======================================================
 // GRID OPACITY
 // ======================================================
 
-el.gridOpacity.addEventListener(
-  'input',
-  e => {
+el.gridOpacity.addEventListener("input", e => {
 
-    const value =
-      e.target.value;
+    const value = e.target.value;
 
-    el.gridOpacityVal.textContent =
-      value;
+    el.gridOpacityVal.textContent = value;
 
     el.canvas.style.setProperty(
-      '--grid-opacity',
-      value
+        "--grid-opacity",
+        value
     );
 
-  }
-);
+});
 
 
 // ======================================================
@@ -849,6 +1202,51 @@ el.imageInput.addEventListener(
   }
 );
 
+el.imageScale.addEventListener("input", e => {
+
+    // Automatically select image target
+    if (!el.imageTarget.checked) {
+
+        el.imageTarget.checked = true;
+
+        state.selected.clear();
+
+        state.activeTarget = null;
+
+        document
+            .querySelectorAll('.tgt')
+            .forEach(cb => {
+                cb.checked = false;
+            });
+
+    }
+
+
+    const scale =
+        e.target.value / 100;
+
+
+    state.imagePosition.scale =
+        scale;
+
+
+    el.scaleVal.textContent =
+        `${e.target.value}%`;
+
+
+    applyImagePosition();
+
+});
+
+el.imageBlendMode.addEventListener("change", e => {
+
+    state.imagePosition.blendMode =
+        e.target.value;
+
+    el.hero.style.mixBlendMode =
+        e.target.value;
+
+});
 
 document.addEventListener(
   'dragover',

@@ -4,57 +4,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Magazine Template Generator</title>
+  <title>Layout</title>
   <link rel='icon' href='data:;base64,='>
   <script src='tailwindcss.min.js'></script>
 
-  <style> 
-  #magazineName,
-#issueText,
-#headline,
-#subheadline,
-#sideText,
-#descriptionText,
-#helloworld {
-  transform-origin: top left;
-  padding: 0;
-}
+<link
+href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Inter:wght@400;700;800&family=Oswald:wght@400;700&family=Playfair+Display:wght@400;700&display=swap"
+rel="stylesheet">
 
-#canvas {
-  position: relative;
-  isolation: isolate;
+<link rel='stylesheet' href='style.css' />
 
-  --grid-opacity: 0.5;
-}
-#canvas::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-
-  background-image:
-    linear-gradient(to right, rgba(255,255,255,var(--grid-opacity)) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,var(--grid-opacity)) 1px, transparent 1px);
-
-  background-size: 40px 40px;
-
-  z-index: 1;
-}
-
-#heroImage {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-
-  transition:
-    transform 0.05s linear,
-    object-position 0.2s ease;
-    
-  transform-origin: center center;
-}
-
-
-  </style>
 </head>
 
 <body class="select-none bg-neutral-950 text-white overflow-hidden">
@@ -65,53 +24,77 @@
   <!-- PREVIEW -->
   <!-- ====================================================== -->
 
-  <div class="flex-1 overflow-auto bg-neutral-900 p-4">
+ <div class="flex-1 overflow-auto bg-neutral-900 relative">
 
-    <div class="block leading-none">
+    <!-- Toggle -->
+    <button
+        id="toggleCanvasSize"
+        class="absolute top-4 right-8 z-50 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+        Landscape (1920x1080px)
+    </button>
 
-      <div
-        id="canvas"
-        class="relative overflow-hidden"
-        style="width:1920px;height:1080px;background:#111"
-      >
+    <!-- Canvas Container -->
+    <div class="min-h-full flex justify-center p-8">
 
-        <img id="heroImage"
-             class="absolute inset-0 w-full h-full object-cover"
-             draggable="false" />
+        <div
+            id="canvas"
+            class="mt-8 relative overflow-hidden"
+            >
 
-        <!-- OVERLAY -->
-        <div id="imageOverlay"
-             class="absolute inset-0 pointer-events-none"
-             style="background:transparent; opacity:0"></div>
+            <img
+                id="heroImage"
+                class="absolute inset-0 w-full h-full object-cover"
+                draggable="false">
 
-        <!-- TEXT LAYERS -->
+            <!-- Overlay -->
+            <div
+                id="imageOverlay"
+                class="absolute inset-0 pointer-events-none"
+                style="background:transparent;opacity:0">
+            </div>
 
-        <div id="magazineName" class="absolute top-14 left-20 uppercase">MODERN
+            <!-- TEXT LAYERS -->
+
+            <div id="ec" class="absolute top-14 left-20">
+                ElectroComposer
+            </div>
+
+            <div id="issue" class="absolute top-52 left-20">
+                Artist
+            </div>
+
+            <div id="headline" class="absolute left-20 bottom-44 leading-none max-w-[1200px]">
+                ELECTROCOMPOSER
+            </div>
+
+            <div id="subheadline" class="absolute left-20 bottom-20 max-w-[1000px]">
+                YO!
+            </div>
+
+            <div
+                id="editorial"
+                class="absolute -right-8 top-1/3 origin-right"
+                style="rotate:90deg;">
+                Editorial
+            </div>
+
+            <div
+                id="description"
+                class="absolute right-10 bottom-64 max-w-[420px] text-right">
+                Word!
+            </div>
+
+            <div
+                id="helloworld"
+                class="absolute top-24 right-20">
+                Hello World
+            </div>
+
         </div>
-
-        <div id="issueText" class="absolute top-52 left-20 uppercase">Issue 24 / Summer 2026
-        </div>
-
-        <div id="headline" class="absolute left-20 bottom-44 leading-none max-w-[1200px]">FUTURE<br>DESIGN
-        </div>
-
-        <div id="subheadline" class="absolute left-20 bottom-20 max-w-[1000px]">Creative systems, visual language, and editorial direction.
-        </div>
-
-        <div style="rotate: 90deg;" id="sideText" class="absolute -right-24 top-1/3 origin-right uppercase">Editorial Collection
-        </div>
-
-        <div id="descriptionText" class="absolute right-20 bottom-20 max-w-[420px] text-right">A contemporary exploration of typography and editorial storytelling.
-        </div>
-
-
-        <div id="helloworld" class="absolute top-14 right-20 uppercase">Hello World
-        </div>
-      </div>
 
     </div>
 
-  </div>
+</div>
 
   <!-- ====================================================== -->
   <!-- CONTROLS -->
@@ -119,13 +102,13 @@
 
   <div class="w-[380px] overflow-auto border-l border-white/10 bg-neutral-950">
 
-    <div class="p-4 space-y-6">
+    <div class="p-4 space-y-3">
 
-      <!-- HERO -->
-      <div class="space-y-5">
+      
+      <div class="space-y-6">
 
         <label id="dropzone"
-               class="flex items-center justify-center h-24 border-2 border-dashed border-white/20 rounded-xl cursor-pointer">
+               class="flex items-center justify-center h-10 border-2 border-dashed border-white/20 rounded-xl cursor-pointer">
           <input id="imageInput" type="file" accept="image/*" class="hidden" />
           <div class="text-sm text-white/60 text-center">
             Drop image or click to upload
@@ -144,39 +127,219 @@
         </div>
 
         
-      <div class="flex gap-2">
+     <div class="space-y-2">
 
-          <div class="flex-1">
-            <div class="text-sm">Background</div>
-            <input id="bgPicker" type="color" class="w-full h-10 mt-1" />
-          </div>
 
-          <div class="flex-1">
-            <div class="text-sm">Overlay</div>
-            <input id="overlayColor" type="color" class="w-full h-10 mt-1" />
-          </div>
-        <!--  -->
-        </div>
-          
 
-        
-          <div class="flex justify-between gap-2">
-            <div class="flex-1">
-              <div class="flex justify-between mt-1">
-                <span class="text-white/60 text-[11px]">Grid Opacity</span>
-                <span id="gridOpacityVal" class="text-xs">0.5</span>
-              </div>
-              <input id="gridOpacity" type="range" min="0" max="1" step="0.01" value="0.5" class="w-full mt-3">
-          </div>
-          
-          <div class="flex-1">
-              <div class="flex justify-between mt-1">
-                <span class="text-white/60 text-[11px]">Overlay Opacity</span>
-                <span id="overlayOpacityVal" class="text-xs">0</span>
-              </div>
-              <input id="overlayOpacity" type="range" min="0" max="1" step="0.01" value="0" class="w-full mt-3">
-          </div>
-          </div>
+
+  <!-- IMAGE SCALE -->
+  <div>
+
+    <div class="flex justify-between text-xs text-white/60">
+      <span>Image Scale</span>
+      <span id="scaleVal">100%</span>
+    </div>
+
+    <input
+      id="imageScale"
+      type="range"
+      min="50"
+      max="300"
+      value="100"
+      class="w-full"
+    >
+
+
+<div>
+    <div class="text-white/60 text-[11px] mb-1">
+        Image Blend Mode
+    </div>
+
+    <select
+        id="imageBlendMode"
+        class="w-full text-black p-1 rounded">
+
+        <option value="normal">Normal</option>
+        <option value="multiply">Multiply</option>
+        <option value="screen">Screen</option>
+        <option value="overlay">Overlay</option>
+        <option value="darken">Darken</option>
+        <option value="lighten">Lighten</option>
+        <option value="color-dodge">Color Dodge</option>
+        <option value="color-burn">Color Burn</option>
+        <option value="hard-light">Hard Light</option>
+        <option value="soft-light">Soft Light</option>
+        <option value="difference">Difference</option>
+        <option value="exclusion">Exclusion</option>
+        <option value="hue">Hue</option>
+        <option value="saturation">Saturation</option>
+        <option value="color">Color</option>
+        <option value="luminosity">Luminosity</option>
+    </select>
+</div>
+
+
+
+  </div>
+  <!-- COLORS -->
+  <div class="flex gap-2">
+
+    <div class="flex-1">
+      <div class="text-xs text-white/60">Background</div>
+      <input 
+        id="bgPicker" 
+        type="color" 
+        class="w-full h-5 mt-1"
+      />
+    </div>
+
+    <div class="flex-1">
+      <div class="text-xs text-white/60">Overlay</div>
+      <input 
+        id="overlayColor" 
+        type="color" 
+        class="w-full h-5 mt-1"
+      />
+    </div>
+
+  </div>
+
+
+  <!-- OPACITY -->
+  <div class="flex gap-2">
+
+    <div class="flex-1">
+      <div class="flex justify-between text-xs text-white/60">
+        <span>Grid Opacity</span>
+        <span id="gridOpacityVal">0.5</span>
+      </div>
+
+      <input
+        id="gridOpacity"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.5"
+        class="w-full"
+      >
+    </div>
+
+
+    <div class="flex-1">
+      <div class="flex justify-between text-xs text-white/60">
+        <span>Overlay Opacity</span>
+        <span id="overlayOpacityVal">0</span>
+      </div>
+
+      <input
+        id="overlayOpacity"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0"
+        class="w-full"
+      >
+    </div>
+
+  </div>
+
+
+  <!-- GRID SELECT -->
+  <select 
+    id="gridStyle" 
+    class="text-black p-1 w-full text-sm"
+  >
+    <option value="grid-lines">Grid</option>
+    <option value="grid-dots">Dots</option>
+    <option value="grid-lines-dots">Grid + Dots</option>
+    <option value="grid-crosses">Grid Crosses</option>
+    <option value="grid-crosses-12">Grid Crosses 12</option>
+    <option value="grid-crosses-12-thick">Grid Crosses 12 Thick</option>
+    <option value="grid-crosses-large">Grid Crosses Large</option>
+    <option value="grid-crosses-xl">Grid Crosses XL</option>
+    <option value="grid-crosses-2xl">Grid Crosses 2XL</option>
+    <option value="grid-crosses-spaced">Grid Crosses Spaced</option>
+    <option value="grid-thirds">Grid Thirds</option>
+    <option value="grid-golden">Grid Golden Ratio</option>
+    <option value="grid-diagonals">Grid Diagonals</option>
+    <option value="grid-baseline">Grid Baseline</option>
+    <option value="grid-columns">Grid Columns</option>
+    <option value="custom-svg-grid">Custom Cross SVG</option>
+  </select>
+
+
+  <!-- CUSTOM SVG CONTROLS -->
+  <div 
+    id="customSvgControls" 
+    class="hidden grid grid-cols-2 gap-x-2 gap-y-1"
+  >
+
+    <div>
+      <label class="text-xs text-white/60">Width</label>
+      <input id="svgW" type="range" min="20" max="300" value="100" class="w-full">
+    </div>
+
+    <div>
+      <label class="text-xs text-white/60">Height</label>
+      <input id="svgH" type="range" min="20" max="300" value="100" class="w-full">
+    </div>
+
+
+    <div>
+      <label class="text-xs text-white/60">X1</label>
+      <input id="svgX1" type="range" min="0" max="300" value="40" class="w-full">
+    </div>
+
+    <div>
+      <label class="text-xs text-white/60">X2</label>
+      <input id="svgX2" type="range" min="0" max="300" value="60" class="w-full">
+    </div>
+
+
+    <div>
+      <label class="text-xs text-white/60">Y1</label>
+      <input id="svgY1" type="range" min="0" max="300" value="40" class="w-full">
+    </div>
+
+    <div>
+      <label class="text-xs text-white/60">Y2</label>
+      <input id="svgY2" type="range" min="0" max="300" value="60" class="w-full">
+    </div>
+
+
+    <div>
+      <label class="text-xs text-white/60">Rotation</label>
+      <input id="svgRotation" type="range" min="0" max="360" value="0" class="w-full">
+    </div>
+
+    <div>
+      <label class="text-xs text-white/60">Stroke Width</label>
+      <input id="svgStrokeWidth" type="range" min="1" max="10" value="2" class="w-full">
+    </div>
+
+
+    <div class="col-span-2">
+      <div class="flex justify-between text-xs text-white/60">
+        <span>Stroke Opacity</span>
+        <span id="svgOpacityVal">0.5</span>
+      </div>
+
+      <input 
+        id="svgOpacity" 
+        type="range" 
+        min="0" 
+        max="1" 
+        step="0.01" 
+        value="0.5"
+        class="w-full"
+      >
+    </div>
+
+  </div>
+</div>
+<!--  -->
 <!--  -->
 </div>
 
@@ -186,7 +349,7 @@
 
       <div class="space-y-2">
 
-        <div class="text-sm font-bold uppercase">Targets</div>
+        <div class="text-sm font-bold">Targets</div>
 
         <div class="grid grid-cols-2 gap-2 text-sm">
 
@@ -199,58 +362,65 @@
             IMAGE
           </label>
 
-          <label class="flex items-center gap-2 text-base">
-            <input class="tgt w-5 h-5" type="checkbox" value="magazineName"> Title
-          </label>
+<label class="flex items-center gap-2 text-base">
+    <input class="tgt w-5 h-5" type="checkbox" value="ec">
+    <span class="target-label"></span>
+</label>
 
-          <label class="flex items-center gap-2 text-base">
-            <input class="tgt w-5 h-5" type="checkbox" value="subheadline"> Subhead
-          </label>
+<label class="flex items-center gap-2 text-base">
+    <input class="tgt w-5 h-5" type="checkbox" value="subheadline">
+    <span class="target-label"></span>
+</label>
 
-          <label class="flex items-center gap-2 text-base">
-            <input class="tgt w-5 h-5" type="checkbox" value="issueText"> Issue
-          </label>
+<label class="flex items-center gap-2 text-base">
+    <input class="tgt w-5 h-5" type="checkbox" value="issue">
+    <span class="target-label"></span>
+</label>
 
-          <label class="flex items-center gap-2 text-base">
-            <input class="tgt w-5 h-5" type="checkbox" value="sideText"> Side
-          </label>
+<label class="flex items-center gap-2 text-base">
+    <input class="tgt w-5 h-5" type="checkbox" value="editorial">
+    <span class="target-label"></span>
+</label>
 
-          <label class="flex items-center gap-2 text-base">
-            <input class="tgt w-5 h-5" type="checkbox" value="headline"> Brand
-          </label>
+<label class="flex items-center gap-2 text-base">
+    <input class="tgt w-5 h-5" type="checkbox" value="headline">
+    <span class="target-label"></span>
+</label>
 
-          <label class="flex items-center gap-2 text-base">
-            <input class="tgt w-5 h-5" type="checkbox" value="descriptionText">
-            Description
-          </label>
-          
-          <label class="flex items-center gap-2 text-base">
-            <input class="tgt w-5 h-5" type="checkbox" value="helloworld">
-            Hello World
-          </label>
+<label class="flex items-center gap-2 text-base">
+    <input class="tgt w-5 h-5" type="checkbox" value="description">
+    <span class="target-label"></span>
+</label>
+
+<label class="flex items-center gap-2 text-base">
+    <input class="tgt w-5 h-5" type="checkbox" value="helloworld">
+    <span class="target-label"></span>
+</label>
 <!--  -->
         </div>
 <!--  -->
       </div>
 
+
+
       <!-- TEXT -->
 
-      <div class="space-y-2 border border-white/10 p-3 rounded-xl">
+      <div class="bg-indigo-100 space-y-2 border border-white/10 p-2 rounded-xl">
 
-        <div class="text-sm font-bold uppercase">Text</div>
+        <div class="text-sm text-black font-bold">Text</div>
 
         <textarea id="globalText"
                   class="w-full bg-neutral-900 p-3 rounded resize-none"
-                  rows="3"></textarea>
+                  rows="5"></textarea>
 
       </div>
 
               <div>
           <div class="flex justify-between text-sm">
             <span>Highlight Opacity</span>
-            <span id="highlightOpacityVal">1</span>
+            <span id="highlightOpacityVal">0</span>
           </div>
-          <input id="highlightOpacity" type="range" min="0" max="1" value="1" step="0.01" class="w-full">
+          <input id="highlightOpacity" type="range" min="0" max="1" value="0" step="0.01" class="w-full">
         </div>
 
 
@@ -309,7 +479,7 @@
 
 
 <!--  -->
-<div class="space-y-2 border border-white/10 p-3 rounded-xl">
+<div class="space-y-2 border border-white/75 p-3 rounded-xl">
 
   <!-- X -->
   <div>
@@ -341,42 +511,125 @@
 </div>
 
 
+
+<label class="block">
+    <div class="flex justify-between mb-1">
+        <span>Font</span>
+    </div>
+
+    <select id="fontFamily" class="w-full bg-neutral-800 rounded px-2 py-2">
+        <option value="SpaceMono">SpaceMono</option>
+        <option value="Menlo">Menlo</option>
+        <option value="Inter">Inter</option>
+        <option value="Anton">Anton</option>
+        <option value="Bebas Neue">Bebas Neue</option>
+        <option value="Oswald">Oswald</option>
+        <option value="Playfair Display">Playfair Display</option>
+        <option value="Monospace">Monospace</option>
+        <option value="Arial" style="font-family: Arial;">Arial</option>
+          <option value="Helvetica" style="font-family: Helvetica;">Helvetica</option>
+          <option value="Georgia" style="font-family: Georgia;">Georgia</option>
+          <option value="Times New Roman" style="font-family: 'Times New Roman';">Times New Roman</option>
+          <option value="Courier New" style="font-family: 'Courier New';">Courier New</option>
+          <option value="Verdana" style="font-family: Verdana;">Verdana</option>
+          <option value="Joystix" style="font-family: Joystix;">Joystix</option>
+          <option value="VintageB" style="font-family: VintageB;">VintageB</option>
+          <option value="Spraypaint" style="font-family: Spraypaint;">Spraypaint</option>
+          <option value="Silkscreen Regular" style="font-family: Silkscreen Regular;">Silkscreen Regular</option>
+          <option value="Silkscreen Bold" style="font-family: Silkscreen Bold;">Silkscreen Bold</option>
+          <option value="Headline" style="font-family: Headline;">Headline</option>
+          <option value="Roboto" style="font-family: Roboto;">Roboto</option>
+          <option value="Typewriter" style="font-family: Typewriter;">Typewriter</option>
+          <option value="Nineteen Forty Two" style="font-family: Nineteen Forty Two;">Nineteen Forty Two</option>
+          <option value="Draconian" style="font-family: Draconian;">Draconian</option>
+          <option value="Metalic" style="font-family: Metalic;">Metalic</option>
+          <option value="Old" style="font-family: Old;">Old</option>
+          <option value="Wbx" style="font-family: Wbx;">Wbx</option>
+          <option value="Special Elite" style="font-family: Special Elite;">Special Elite</option>
+          <option value="Marker" style="font-family: Marker;">Marker</option>
+          <option value="Punk" style="font-family: Punk;">Punk</option>
+          <option value="ITC" style="font-family: ITC;">ITC</option>
+          <option value="Resolution" style="font-family: Resolution;">Resolution</option>
+    </select>
+</label>
         
-        <!-- SIZE -->
-        <div>
-          <div class="flex justify-between text-sm">
-            <span>Size</span>
-            <span id="sizeVal">40</span>
-          </div>
-          <input id="fontSize" type="range" min="10" max="220" value="40" class="w-full">
+       <div class="grid grid-cols-2 gap-2">
+
+    <!-- SIZE -->
+    <div>
+        <div class="flex justify-between mt-1">
+            <span class="text-white/60 text-[11px]">Font Size</span>
+            <span id="sizeVal" class="text-xs">40</span>
         </div>
 
-        <!-- LINE HEIGHT -->
-        <div>
-          <div class="flex justify-between text-sm">
-            <span>Line Height</span>
-            <span id="lhVal">0</span>
-          </div>
-          <input id="lineHeight" type="range" min="-5" max="5" step="0.01" value="0" class="w-full">
+        <input
+            id="fontSize"
+            type="range"
+            min="10"
+            max="220"
+            value="40"
+            class="w-full mt-3"
+        >
+    </div>
+
+
+    <!-- LINE HEIGHT -->
+    <div>
+        <div class="flex justify-between mt-1">
+            <span class="text-white/60 text-[11px]">Line Height</span>
+            <span id="lhVal" class="text-xs">0</span>
         </div>
 
-        <!-- LETTER -->
-        <div>
-          <div class="flex justify-between text-sm">
-            <span>Letter Spacing</span>
-            <span id="lsVal">0</span>
-          </div>
-          <input id="letterSpacing" type="range" min="-2" max="2" step="0.01" value="0" class="w-full">
+        <input
+            id="lineHeight"
+            type="range"
+            min="-5"
+            max="5"
+            step="0.01"
+            value="0"
+            class="w-full mt-3"
+        >
+    </div>
+
+
+    <!-- LETTER -->
+    <div>
+        <div class="flex justify-between mt-1">
+            <span class="text-white/60 text-[11px]">Letter Spacing</span>
+            <span id="lsVal" class="text-xs">0</span>
         </div>
 
-        <!-- WORD -->
-        <div>
-          <div class="flex justify-between text-sm">
-            <span>Word Spacing</span>
-            <span id="wsVal">0</span>
-          </div>
-          <input id="wordSpacing" type="range" min="-5" max="5" step="0.05" value="0" class="w-full">
+        <input
+            id="letterSpacing"
+            type="range"
+            min="-2"
+            max="2"
+            step="0.01"
+            value="0"
+            class="w-full mt-3"
+        >
+    </div>
+
+
+    <!-- WORD -->
+    <div>
+        <div class="flex justify-between mt-1">
+            <span class="text-white/60 text-[11px]">Word Spacing</span>
+            <span id="wsVal" class="text-xs">0</span>
         </div>
+
+        <input
+            id="wordSpacing"
+            type="range"
+            min="-5"
+            max="5"
+            step="0.05"
+            value="0"
+            class="w-full mt-3"
+        >
+    </div>
+
+</div>
 
        
       </div>
